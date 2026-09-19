@@ -1,34 +1,3 @@
-* {
-  box-sizing: border-box;
-}
-
-body {
-  margin: 0;
-  font-family: Arial, sans-serif;
-}
-
-nav {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-
-  padding: 1rem 5%;
-  background: #222;
-  color: white;
-}
-
-nav a {
-  margin-left: 1rem;
-  color: white;
-  text-decoration: none;
-}
-
-main,
-section {
-  width: min(1100px, 90%);
-  margin: 0 auto;
-}
-
 .hero {
   padding: 5rem 0;
 }

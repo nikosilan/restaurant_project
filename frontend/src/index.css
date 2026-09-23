@@ -2,14 +2,19 @@
   box-sizing: border-box;
 }
 
+@font-face {
+  font-family: "FugazOne";
+  src: url("/fonts/FugazOne-Regular.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+}
+
 body {
   margin: 0;
   font-family: Arial, sans-serif;
   background-color: #fff4df;
   color: #3b1f16;
 }
-
-
 
 nav {
   display: flex;
@@ -22,7 +27,8 @@ nav {
 
 nav h1 {
   margin: 0;
-  font-size: 28px;
+  font-size: 48px;
+  font-family: "FugazOne", cursive;
 }
 
 .nav-links {
@@ -46,6 +52,13 @@ nav h1 {
   padding: 60px 40px;
   max-width: 1000px;
   margin: 0 auto;
+}
+
+nav h1 img {
+  width: 40px;
+  height: 40px;
+  margin-left: 10px;
+  object-fit: contain;
 }
 
 .home h2 {

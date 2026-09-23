@@ -5,7 +5,10 @@ function Navbar() {
 
   return (
     <nav>
-      <h1>Pizzeria</h1>
+      <h1>
+        Pizzeria
+        <img src="/pizza.svg" alt="" />
+      </h1>
 
       <div className="nav-links">
         {pathname !== "/" && <Link to="/">Home</Link>}

@@ -12,23 +12,32 @@
 body {
   margin: 0;
   font-family: Arial, sans-serif;
-  background-color: #fff4df;
-  color: #3b1f16;
+  background-color: #ffffff;
+  color: #222222;
 }
 
 nav {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 20px 40px;
+  padding: 15px 35px;
   background-color: #9e2a2b;
   color: white;
 }
 
 nav h1 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
   margin: 0;
-  font-size: 48px;
   font-family: "FugazOne", cursive;
+  font-size: 40px;
+  font-weight: normal;
+}
+
+nav h1 img {
+  width: 36px;
+  height: 36px;
 }
 
 .nav-links {
@@ -37,39 +46,24 @@ nav h1 {
 }
 
 .nav-links a {
-  text-decoration: none;
   color: white;
+  text-decoration: none;
   font-weight: bold;
 }
 
 .nav-links a:hover {
-  color: #ffd166;
+  text-decoration: underline;
 }
-
-/* Home page */
 
 .home {
-  padding: 60px 40px;
   max-width: 1000px;
   margin: 0 auto;
-}
-
-nav h1 img {
-  width: 40px;
-  height: 40px;
-  margin-left: 10px;
-  object-fit: contain;
+  padding: 50px 40px;
 }
 
 .home h2 {
-  margin-top: 40px;
-  margin-bottom: 15px;
+  margin-top: 35px;
   color: #9e2a2b;
-  font-size: 30px;
-}
-
-.home h2:first-child {
-  margin-top: 0;
 }
 
 .home p {
@@ -80,20 +74,14 @@ nav h1 img {
 .admin-form {
   max-width: 420px;
   padding: 25px;
-  background-color: #fff;
-  border: 2px solid #9e2a2b;
-  border-radius: 8px;
+  background-color: white;
+  border: 1px solid #cccccc;
 }
 
 .admin-form label {
   display: block;
   margin: 15px 0 5px;
   font-weight: bold;
-  color: #9e2a2b;
-}
-
-.admin-form label:first-child {
-  margin-top: 0;
 }
 
 .admin-form input,
@@ -101,12 +89,11 @@ nav h1 img {
 .admin-form select {
   width: 100%;
   padding: 10px;
-  font-family: inherit;
+  font-family: Arial, sans-serif;
   font-size: 16px;
-  border: 1px solid #d8c4a5;
-  border-radius: 4px;
-  background-color: #fff4df;
-  color: #3b1f16;
+  border: 1px solid #bbbbbb;
+  background-color: white;
+  color: #222222;
 }
 
 .admin-form textarea {
@@ -116,14 +103,13 @@ nav h1 img {
 
 .btn {
   margin-top: 20px;
-  padding: 12px 24px;
-  font-family: inherit;
+  padding: 11px 22px;
+  font-family: Arial, sans-serif;
   font-size: 16px;
   font-weight: bold;
   color: white;
   background-color: #9e2a2b;
   border: none;
-  border-radius: 4px;
   cursor: pointer;
 }
 
@@ -133,12 +119,11 @@ nav h1 img {
 
 .btn-secondary {
   padding: 8px 16px;
-  font-family: inherit;
+  font-family: Arial, sans-serif;
   font-size: 15px;
   color: #9e2a2b;
-  background-color: transparent;
-  border: 2px solid #9e2a2b;
-  border-radius: 4px;
+  background-color: white;
+  border: 1px solid #9e2a2b;
   cursor: pointer;
 }
 
@@ -147,20 +132,37 @@ nav h1 img {
   background-color: #9e2a2b;
 }
 
+.admin-page {
+  min-height: calc(100vh - 70px);
+  padding: 50px 40px;
+  background-color: #e9e7e2;
+}
+
+.admin-page h2 {
+  margin-top: 0;
+  color: #9e2a2b;
+}
+
 .admin-list {
-  margin-bottom: 40px;
+  max-width: 900px;
+  background-color: white;
+  border: 1px solid #cccccc;
 }
 
 .admin-row {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 15px 0;
-  border-bottom: 1px solid #d8c4a5;
+  padding: 15px 20px;
+  border-bottom: 1px solid #dddddd;
+}
+
+.admin-row:last-child {
+  border-bottom: none;
 }
 
 .admin-meta {
   margin-top: 4px;
   font-size: 15px;
-  color: #7a5c4e;
+  color: #666666;
 }

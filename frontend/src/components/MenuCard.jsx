@@ -1,4 +1,8 @@
-function MenuCard({ day, food, price, dietary, isToday }) {
+function MenuCard({ day, food, price, dietary, isToday, language = "en" }) {
+  const dietaryNames = dietary.map(
+    (tag) => tag[`name_${language}`] || tag.name_en || tag.code || tag,
+  );
+
   return (
     <article className={isToday ? "menu-card today" : "menu-card"}>
       {isToday && <span>Today</span>}
@@ -9,7 +13,7 @@ function MenuCard({ day, food, price, dietary, isToday }) {
 
       <p>{price} €</p>
 
-      <p>Dietary: {dietary.join(", ")}</p>
+      <p>Dietary: {dietaryNames.join(", ")}</p>
     </article>
   );
 }

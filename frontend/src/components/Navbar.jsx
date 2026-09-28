@@ -12,9 +12,14 @@ function Navbar() {
 
       <div className="nav-links">
         {pathname !== "/" && <Link to="/">Home</Link>}
+
         {pathname !== "/admin-login" && (
           <Link to="/admin-login">Admin</Link>
         )}
+
+        <Link to="/cart" className="cart-link">
+          <img src="/cart.png" alt="Shopping cart" />
+        </Link>
       </div>
     </nav>
   );

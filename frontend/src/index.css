@@ -42,6 +42,7 @@ nav h1 img {
 
 .nav-links {
   display: flex;
+  align-items: center;
   gap: 25px;
 }
 
@@ -135,7 +136,7 @@ nav h1 img {
 .admin-page {
   min-height: calc(100vh - 70px);
   padding: 50px 40px;
-  background-color: #e9e7e2;
+  background-color: #ffffff;
 }
 
 .admin-page h2 {

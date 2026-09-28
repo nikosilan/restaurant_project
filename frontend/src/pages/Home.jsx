@@ -73,33 +73,47 @@ function Home() {
   const currentMenu = menu[selectedDay];
 
   return (
-    <main className="home">
-      <section className="menu-section">
-        <div className="day-selector">
-          <button className="day-arrow" onClick={previousDay}>
-            ←
-          </button>
+    <>
+      <main className="home">
+        <section className="menu-section">
+          <div className="day-selector">
+            <button className="day-arrow" onClick={previousDay}>
+              ←
+            </button>
 
-          <h2>{currentMenu.day}</h2>
+            <h2>{currentMenu.day}</h2>
 
-          <button className="day-arrow" onClick={nextDay}>
-            →
-          </button>
-        </div>
+            <button className="day-arrow" onClick={nextDay}>
+              →
+            </button>
+          </div>
 
-        <div className="day-menu">
-          <h3>{currentMenu.name}</h3>
+          <div className="day-menu">
+            <h3>{currentMenu.name}</h3>
 
-          <p>{currentMenu.description}</p>
+            <p>{currentMenu.description}</p>
 
-          <strong>{currentMenu.price.toFixed(2).replace(".", ",")} €</strong>
+            <strong>{currentMenu.price.toFixed(2).replace(".", ",")} €</strong>
 
-          <button className="btn" onClick={addToCart}>
-            Add to cart
-          </button>
-        </div>
+            <button className="btn" onClick={addToCart}>
+              Add to cart
+            </button>
+          </div>
+        </section>
+      </main>
+
+      <section className="location-section">
+        <h2>Location</h2>
+
+        <p>Pizzeria Napoli</p>
+        <p>Kivenlahdentie 10, 02320 Espoo</p>
+
+        <iframe
+          title="Pizzeria Napoli location"
+          src="https://www.openstreetmap.org/export/embed.html?bbox=24.643%2C60.178%2C24.673%2C60.188&layer=mapnik&marker=60.183%2C24.658"
+        ></iframe>
       </section>
-    </main>
+    </>
   );
 }
 

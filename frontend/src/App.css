@@ -1,120 +1,28 @@
-.menu-section {
-  max-width: 900px;
-  margin: 0 auto;
-  padding: 60px 40px;
-}
-
-.day-selector {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 35px;
-}
-
-.day-selector h2 {
-  min-width: 180px;
-  margin: 0;
-  text-align: center;
-  font-size: 32px;
-  color: #9e2a2b;
-}
-
-.day-arrow {
-  width: 45px;
-  height: 45px;
-  font-size: 24px;
-  color: white;
-  background-color: #9e2a2b;
-  border: none;
-  cursor: pointer;
-}
-
-.day-arrow:hover {
-  background-color: #7d2122;
-}
-
-.day-menu {
-  max-width: 600px;
-  margin: 35px auto 0;
-  padding: 30px;
+.location-section {
+  width: 100vw !important;
+  max-width: none !important;
+  margin: 40px 0 0 !important;
+  padding: 40px !important;
   text-align: center;
   background-color: #ffffff;
-  border: 1px solid #cccccc;
+  border-top: 1px solid #cccccc;
 }
 
-.day-menu h3 {
-  margin: 0 0 15px;
-  font-size: 26px;
-  color: #9e2a2b;
+.location-section h2 {
+  margin: 0 0 20px !important;
+  color: #9e2a2b !important;
 }
 
-.day-menu p {
-  margin: 0 0 20px;
-  font-size: 18px;
-  line-height: 1.5;
+.location-section p {
+  margin: 5px 0 !important;
+  font-size: 17px !important;
 }
 
-.day-menu strong {
-  display: block;
-  font-size: 20px;
-}
-
-.day-menu .btn {
-  display: block;
-  margin: 25px auto 0;
-}
-
-.cart-link {
-  display: flex;
-  align-items: center;
-}
-
-.cart-link img {
-  width: 30px;
-  height: 30px;
-}
-
-.cart-page {
-  max-width: 1000px;
-  margin: 0 auto;
-  padding: 50px 40px;
-}
-
-.cart-page h2 {
-  margin-top: 0;
-  color: #9e2a2b;
-}
-
-.cart-list {
-  max-width: 800px;
-  background-color: #ffffff;
-  border: 1px solid #cccccc;
-}
-
-.cart-item {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 20px;
-  border-bottom: 1px solid #dddddd;
-}
-
-.cart-item:last-child {
-  border-bottom: none;
-}
-
-.cart-item h3 {
-  margin: 0 0 8px;
-  color: #9e2a2b;
-}
-
-.cart-item p {
-  margin: 0 0 8px;
-}
-
-.cart-total {
-  max-width: 800px;
-  padding: 20px;
-  text-align: right;
-  font-size: 20px;
+.location-section iframe {
+  display: block !important;
+  width: 100% !important;
+  max-width: none !important;
+  height: 550px !important;
+  margin: 25px 0 0 !important;
+  border: 1px solid #cccccc !important;
 }

@@ -50,13 +50,13 @@ function Home() {
 
   const previousDay = () => {
     setSelectedDay((current) =>
-      current === 0 ? menu.length - 1 : current - 1
+      current === 0 ? menu.length - 1 : current - 1,
     );
   };
 
   const nextDay = () => {
     setSelectedDay((current) =>
-      current === menu.length - 1 ? 0 : current + 1
+      current === menu.length - 1 ? 0 : current + 1,
     );
   };
 
@@ -81,7 +81,6 @@ function Home() {
           </button>
 
           <h2>{currentMenu.day}</h2>
-      <h2>{currentMenu.day}</h2>
 
           <button className="day-arrow" onClick={nextDay}>
             →

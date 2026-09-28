@@ -12,8 +12,8 @@ function Navbar() {
 
       <div className="nav-links">
         {pathname !== "/" && <Link to="/">Home</Link>}
-
-        {pathname !== "/admin-login" && (
+        {pathname !== "/menu" && <Link to="/menu">Menu</Link>}
+        {pathname !== "/admin-login" && pathname !== "/admin" && (
           <Link to="/admin-login">Admin</Link>
         )}
 

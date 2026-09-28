@@ -81,6 +81,7 @@ function Home() {
           </button>
 
           <h2>{currentMenu.day}</h2>
+      <h2>{currentMenu.day}</h2>
 
           <button className="day-arrow" onClick={nextDay}>
             →

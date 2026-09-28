@@ -53,6 +53,7 @@ nav h1 img {
 }
 
 .nav-links a:hover {
+  color: #f4a261;
   text-decoration: underline;
 }
 

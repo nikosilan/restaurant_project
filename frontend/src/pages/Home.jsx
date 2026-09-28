@@ -1,20 +1,91 @@
+import { useState } from "react";
+
+const menu = [
+  {
+    day: "Maanantai",
+    name: "Pepperoni Pizza",
+    description: "Tomaattikastike, mozzarella ja pepperoni",
+    price: "12,90 €",
+  },
+  {
+    day: "Tiistai",
+    name: "Kinkku Pizza",
+    description: "Tomaattikastike, mozzarella ja kinkku",
+    price: "12,90 €",
+  },
+  {
+    day: "Keskiviikko",
+    name: "Kebab Pizza",
+    description: "Tomaattikastike, mozzarella, kebab ja sipuli",
+    price: "13,90 €",
+  },
+  {
+    day: "Torstai",
+    name: "Kana Pizza",
+    description: "Tomaattikastike, mozzarella, kana ja ananas",
+    price: "13,90 €",
+  },
+  {
+    day: "Perjantai",
+    name: "Opera Pizza",
+    description: "Tomaattikastike, mozzarella, kinkku ja tonnikala",
+    price: "13,90 €",
+  },
+  {
+    day: "Lauantai",
+    name: "Quattro Formaggi",
+    description: "Mozzarella, gorgonzola, parmesaani ja emmental",
+    price: "14,90 €",
+  },
+  {
+    day: "Sunnuntai",
+    name: "Margherita Pizza",
+    description: "Tomaattikastike, mozzarella ja basilika",
+    price: "11,90 €",
+  },
+];
+
 function Home() {
+  const [selectedDay, setSelectedDay] = useState(0);
+
+  const previousDay = () => {
+    setSelectedDay((current) =>
+      current === 0 ? menu.length - 1 : current - 1
+    );
+  };
+
+  const nextDay = () => {
+    setSelectedDay((current) =>
+      current === menu.length - 1 ? 0 : current + 1
+    );
+  };
+
+  const currentMenu = menu[selectedDay];
+
   return (
     <main className="home">
-      <h2>Welcome to our restaurant</h2>
+      <section className="menu-section">
+        <div className="day-selector">
+          <button className="day-arrow" onClick={previousDay}>
+            ←
+          </button>
 
-      <p>Lunch every weekday.</p>
+          <h2>{currentMenu.day}</h2>
 
-      <h2>Today's lunch</h2>
+          <button className="day-arrow" onClick={nextDay}>
+            →
+          </button>
+        </div>
 
-      <p>Lunch and the whole weekly menu.</p>
-
-      <h2>Restaurant info</h2>
-
-      <p>Open Monday–Friday 10:00–18:00</p>
-      <p>Address: Espoo</p>
+        <div className="day-menu">
+          <h3>{currentMenu.name}</h3>
+          <p>{currentMenu.description}</p>
+          <strong>{currentMenu.price}</strong>
+        </div>
+      </section>
     </main>
   );
 }
 
 export default Home;
+

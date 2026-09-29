@@ -17,9 +17,11 @@ function Navbar() {
           <Link to="/admin-login">Admin</Link>
         )}
 
-        <Link to="/cart" className="cart-link">
-          <img src="/cart.png" alt="Shopping cart" />
-        </Link>
+        {pathname !== "/cart" && (
+          <Link to="/cart" className="cart-link">
+            <img src="/cart.svg" alt="Shopping cart" />
+          </Link>
+        )}
       </div>
     </nav>
   );

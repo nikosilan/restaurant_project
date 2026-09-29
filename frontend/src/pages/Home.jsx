@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 const pizzaImages = [
   {
@@ -64,31 +64,29 @@ const menu = [
 ];
 
 function Home() {
-<<<<<<< HEAD
   const today = new Date().getDay();
+
+  const [activeImage, setActiveImage] = useState(0);
 
   const [selectedDay, setSelectedDay] = useState(
     today === 0 ? 6 : today - 1
   );
-=======
-  const [selectedDay, setSelectedDay] = useState(0);
-  const [activeImage, setActiveImage] = useState(0);
-
-  useEffect(() => {
-    const timer = window.setInterval(() => {
-      setActiveImage((current) => (current + 1) % pizzaImages.length);
-    }, 5000);
-
-    return () => window.clearInterval(timer);
-  }, []);
 
   const changeImage = (direction) => {
-    setActiveImage(
-      (current) =>
-        (current + direction + pizzaImages.length) % pizzaImages.length,
-    );
+    setActiveImage((current) => {
+      const next = current + direction;
+
+      if (next < 0) {
+        return pizzaImages.length - 1;
+      }
+
+      if (next >= pizzaImages.length) {
+        return 0;
+      }
+
+      return next;
+    });
   };
->>>>>>> 91dbfba48d453650769d848b28c53fc22d0592bb
 
   const previousDay = () => {
     setSelectedDay((current) =>
@@ -132,9 +130,11 @@ function Home() {
                   event.currentTarget.src = "/pizza.svg";
                 }}
               />
+
               <h2>{image.title}</h2>
             </div>
           ))}
+
           <button
             className="pizza-carousel-arrow previous"
             type="button"
@@ -143,6 +143,7 @@ function Home() {
           >
             ‹
           </button>
+
           <button
             className="pizza-carousel-arrow next"
             type="button"
@@ -151,6 +152,7 @@ function Home() {
           >
             ›
           </button>
+
           <div className="pizza-carousel-dots">
             {pizzaImages.map((image, index) => (
               <button
@@ -166,17 +168,12 @@ function Home() {
         </section>
 
         <section className="menu-section">
-<<<<<<< HEAD
           <div className="day-navigation">
             <button
               type="button"
               className="day-button"
               onClick={previousDay}
             >
-=======
-          <div className="day-selector">
-            <button className="day-arrow" type="button" aria-label="Edellinen päivä" onClick={previousDay}>
->>>>>>> 91dbfba48d453650769d848b28c53fc22d0592bb
               ←
             </button>
 
@@ -190,15 +187,11 @@ function Home() {
               {currentMenu.day}
             </div>
 
-<<<<<<< HEAD
             <button
               type="button"
               className="day-button"
               onClick={nextDay}
             >
-=======
-            <button className="day-arrow" type="button" aria-label="Seuraava päivä" onClick={nextDay}>
->>>>>>> 91dbfba48d453650769d848b28c53fc22d0592bb
               →
             </button>
           </div>
@@ -212,17 +205,12 @@ function Home() {
               {currentMenu.price.toFixed(2).replace(".", ",")} €
             </strong>
 
-<<<<<<< HEAD
             <button
               type="button"
               className="btn"
               onClick={addToCart}
             >
               Add to cart
-=======
-            <button className="btn" onClick={addToCart}>
-              Lisää ostoskoriin
->>>>>>> 91dbfba48d453650769d848b28c53fc22d0592bb
             </button>
           </div>
         </section>

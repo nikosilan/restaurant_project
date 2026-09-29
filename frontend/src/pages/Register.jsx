@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 
-function Login() {
+function Register() {
+  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
@@ -11,10 +12,10 @@ function Login() {
     setMessage("");
 
     try {
-      const response = await fetch("/api/auth/login", {
+      const response = await fetch("/api/auth/register", {
         method: "POST",
         headers: { "Content-type": "application/json" },
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify({ name, email, password }),
       });
       const data = await response.json();
 
@@ -22,7 +23,7 @@ function Login() {
         setMessage(data.error);
         return;
       }
-      setMessage(`Logged in as ${data.name}`);
+      setMessage("Account registered, You can now log in.");
     } catch {
       setMessage("could not connect to server.");
     }
@@ -30,10 +31,16 @@ function Login() {
 
   return (
     <div className="home">
-      <h2>Log in</h2>
-      <p>Customer login.</p>
-
+      <h2>Create an account</h2>
+      <p>Customer registration.</p>
       <form className="admin-form" onSubmit={handleSubmit}>
+        <label htmlFor="name">Name</label>
+        <input
+          id="name"
+          type="text"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+        />
         <label htmlFor="email">Email</label>
         <input
           id="email"
@@ -51,15 +58,15 @@ function Login() {
         />
 
         <button className="btn" type="submit">
-          Sign in
+          Register
         </button>
         {message && <p>{message}</p>}
         <p>
-          Don't have an account? <Link to="/register">Register</Link>
+          Already have an account? <Link to="/login">Log in</Link>
         </p>
       </form>
     </div>
   );
 }
 
-export default Login;
+export default Register;

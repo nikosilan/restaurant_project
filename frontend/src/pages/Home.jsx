@@ -46,17 +46,21 @@ const menu = [
 ];
 
 function Home() {
-  const [selectedDay, setSelectedDay] = useState(0);
+  const today = new Date().getDay();
+
+  const [selectedDay, setSelectedDay] = useState(
+    today === 0 ? 6 : today - 1
+  );
 
   const previousDay = () => {
     setSelectedDay((current) =>
-      current === 0 ? menu.length - 1 : current - 1,
+      current === 0 ? menu.length - 1 : current - 1
     );
   };
 
   const nextDay = () => {
     setSelectedDay((current) =>
-      current === menu.length - 1 ? 0 : current + 1,
+      current === menu.length - 1 ? 0 : current + 1
     );
   };
 
@@ -76,14 +80,30 @@ function Home() {
     <>
       <main className="home">
         <section className="menu-section">
-          <div className="day-selector">
-            <button className="day-arrow" onClick={previousDay}>
+          <div className="day-navigation">
+            <button
+              type="button"
+              className="day-button"
+              onClick={previousDay}
+            >
               ←
             </button>
 
-            <h2>{currentMenu.day}</h2>
+            <div
+              className={
+                selectedDay === (today === 0 ? 6 : today - 1)
+                  ? "day-name today"
+                  : "day-name"
+              }
+            >
+              {currentMenu.day}
+            </div>
 
-            <button className="day-arrow" onClick={nextDay}>
+            <button
+              type="button"
+              className="day-button"
+              onClick={nextDay}
+            >
               →
             </button>
           </div>
@@ -93,9 +113,15 @@ function Home() {
 
             <p>{currentMenu.description}</p>
 
-            <strong>{currentMenu.price.toFixed(2).replace(".", ",")} €</strong>
+            <strong>
+              {currentMenu.price.toFixed(2).replace(".", ",")} €
+            </strong>
 
-            <button className="btn" onClick={addToCart}>
+            <button
+              type="button"
+              className="btn"
+              onClick={addToCart}
+            >
               Add to cart
             </button>
           </div>

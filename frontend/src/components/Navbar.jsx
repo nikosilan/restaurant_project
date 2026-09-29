@@ -14,7 +14,15 @@ function Navbar() {
         {pathname !== "/" && <Link to="/">Home</Link>}
         {pathname !== "/menu" && <Link to="/menu">Menu</Link>}
         {pathname !== "/login" && <Link to="/login">log in</Link>}
-        {pathname !== "/admin-login" && <Link to="/admin-login">Admin</Link>}
+        {pathname !== "/admin-login" && pathname !== "/admin" && (
+          <Link to="/admin-login">Admin</Link>
+        )}
+
+        {pathname !== "/cart" && (
+          <Link to="/cart" className="cart-link">
+            <img src="/cart.svg" alt="Shopping cart" />
+          </Link>
+        )}
       </div>
     </nav>
   );

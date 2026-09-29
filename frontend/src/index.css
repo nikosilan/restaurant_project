@@ -81,9 +81,178 @@ nav h1 img {
   padding: 50px 40px;
 }
 
+.pizza-carousel {
+  position: relative;
+  height: clamp(240px, 38vw, 390px);
+  margin: 0 0 32px;
+  overflow: hidden;
+  border-radius: 12px;
+  background: #3a2822;
+}
+
+.pizza-slide {
+  position: absolute;
+  inset: 0;
+  visibility: hidden;
+  opacity: 0;
+  transition: opacity 450ms ease, visibility 450ms ease;
+}
+
+.pizza-slide.active {
+  visibility: visible;
+  opacity: 1;
+}
+
+.pizza-slide::after {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(0deg, rgb(0 0 0 / 65%), transparent 65%);
+  content: "";
+}
+
+.pizza-slide img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.home .pizza-slide h2 {
+  position: absolute;
+  z-index: 1;
+  right: 64px;
+  bottom: 40px;
+  left: 64px;
+  margin: 0;
+  color: #f4a261;
+  font-size: clamp(24px, 4vw, 42px);
+  text-shadow: 0 2px 8px rgb(0 0 0 / 50%);
+}
+
+.pizza-carousel-arrow {
+  position: absolute;
+  z-index: 2;
+  top: 50%;
+  display: grid;
+  width: 42px;
+  height: 42px;
+  place-items: center;
+  padding: 0 0 4px;
+  border: 1px solid rgb(255 255 255 / 75%);
+  border-radius: 50%;
+  background: rgb(0 0 0 / 35%);
+  color: white;
+  cursor: pointer;
+  font-size: 30px;
+  line-height: 1;
+  transform: translateY(-50%);
+}
+
+.pizza-carousel-arrow:hover {
+  background: rgb(0 0 0 / 70%);
+}
+
+.pizza-carousel-arrow.previous {
+  left: 14px;
+}
+
+.pizza-carousel-arrow.next {
+  right: 14px;
+}
+
+.pizza-carousel-dots {
+  position: absolute;
+  z-index: 2;
+  right: 0;
+  bottom: 14px;
+  left: 0;
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+}
+
+.pizza-carousel-dots button {
+  width: 9px;
+  height: 9px;
+  padding: 0;
+  border: 1px solid white;
+  border-radius: 50%;
+  background: transparent;
+  cursor: pointer;
+}
+
+.pizza-carousel-dots button.active {
+  background: white;
+}
+
 .home h2 {
   margin-top: 35px;
   color: #9e2a2b;
+}
+
+.home .day-selector {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+}
+
+.home .day-selector h2 {
+  min-width: 180px;
+  margin: 0;
+  text-align: center;
+}
+
+.day-arrow {
+  display: inline-flex;
+  width: 42px;
+  height: 42px;
+  flex: 0 0 42px;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border: 1px solid #9e2a2b;
+  border-radius: 50%;
+  background: #ffffff;
+  color: #9e2a2b;
+  cursor: pointer;
+  font-size: 22px;
+  line-height: 1;
+}
+
+.day-arrow:hover {
+  background: #9e2a2b;
+  color: #ffffff;
+}
+
+@media (max-width: 600px) {
+  .home {
+    padding: 28px 18px;
+  }
+
+  .pizza-carousel {
+    height: 250px;
+    margin-bottom: 24px;
+  }
+
+  .home .pizza-slide h2 {
+    right: 48px;
+    bottom: 36px;
+    left: 48px;
+  }
+
+  .pizza-carousel-arrow {
+    width: 36px;
+    height: 36px;
+  }
+
+  .home .day-selector {
+    gap: 8px;
+  }
+
+  .home .day-selector h2 {
+    min-width: 150px;
+  }
 }
 
 .home p {

@@ -30,7 +30,7 @@ function Register() {
   };
 
   return (
-    <div className="home">
+    <div className="home auth-page">
       <h2>Create an account</h2>
       <p>Customer registration.</p>
       <form className="admin-form" onSubmit={handleSubmit}>

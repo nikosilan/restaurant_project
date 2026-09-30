@@ -29,7 +29,7 @@ function Login() {
   };
 
   return (
-    <div className="home">
+    <div className="home auth-page">
       <h2>Log in</h2>
       <p>Customer login.</p>
 

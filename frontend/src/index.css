@@ -9,6 +9,13 @@
   font-style: normal;
 }
 
+html,
+body,
+#root {
+  width: 100%;
+  min-height: 100%;
+}
+
 body {
   margin: 0;
   font-family: Arial, sans-serif;
@@ -20,7 +27,9 @@ nav {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 15px 35px;
+  width: 100%;
+  height: 60px;
+  padding: 5px 35px;
   background-color: #9e2a2b;
   color: white;
 }
@@ -28,16 +37,16 @@ nav {
 nav h1 {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
   margin: 0;
   font-family: "FugazOne", cursive;
-  font-size: 40px;
+  font-size: 30px;
   font-weight: normal;
 }
 
 nav h1 img {
-  width: 36px;
-  height: 36px;
+  width: 28px;
+  height: 28px;
 }
 
 .nav-links {
@@ -53,13 +62,22 @@ nav h1 img {
 }
 
 .nav-links a:hover {
-  color: #f4a261;
   text-decoration: underline;
 }
 
+.cart-link {
+  display: flex;
+  align-items: center;
+}
+
+.cart-link img {
+  width: 26px;
+  height: 26px;
+}
+
 .home {
-  max-width: 1000px;
-  margin: 0 auto;
+  width: 100%;
+  margin: 0;
   padding: 50px 40px;
 }
 
@@ -245,6 +263,7 @@ nav h1 img {
 }
 
 .admin-form {
+  width: 100%;
   max-width: 420px;
   padding: 25px;
   background-color: white;
@@ -306,7 +325,8 @@ nav h1 img {
 }
 
 .admin-page {
-  min-height: calc(100vh - 70px);
+  width: 100%;
+  min-height: calc(100vh - 60px);
   padding: 50px 40px;
   background-color: #ffffff;
 }
@@ -317,7 +337,7 @@ nav h1 img {
 }
 
 .admin-list {
-  max-width: 900px;
+  width: 100%;
   background-color: white;
   border: 1px solid #cccccc;
 }

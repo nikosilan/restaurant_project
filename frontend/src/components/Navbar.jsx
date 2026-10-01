@@ -5,11 +5,12 @@ function Navbar() {
 
   return (
     <nav>
-      <h1>
-        Pizzeria
-        <img src="/pizza.svg" alt="" />
-      </h1>
-
+      <Link to="/" className="logo-link">
+        <h1>
+          Pizzeria
+          <img src="/pizza.svg" alt="" />
+        </h1>
+      </Link>
       <div className="nav-links">
         {pathname !== "/" && <Link to="/">Home</Link>}
         {pathname !== "/menu" && <Link to="/menu">Menu</Link>}

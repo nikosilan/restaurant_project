@@ -23,6 +23,7 @@ const listMenuByLocation = async (locationId) => {
   }
 
   const itemIds = items.map((item) => item.id);
+  // the ? is used to prevent SQL injection attacks by safely inserting the itemIds into the SQL query.
   const placeholders = itemIds.map(() => "?").join(", ");
 
   const [tagRows] = await pool.execute(

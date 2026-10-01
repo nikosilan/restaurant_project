@@ -2,7 +2,7 @@ import pool from "../../utils/database.js";
 
 const findUserByEmail = async (email) => {
   const [rows] = await pool.execute(
-    `SELECT id, name, email, password_hash FROM users WHERE email = ?`,
+    `SELECT id, name, email, password_hash, role, language FROM users WHERE email = ?`,
     [email],
   );
   return rows[0];

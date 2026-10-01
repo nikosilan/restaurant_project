@@ -40,6 +40,8 @@ const combineMenu = (items, tagRows, categoryRows) => {
 
 const getMenu = async (request, response, next) => {
   try {
+    // TODO: Use a configured or user-selected location instead of defaulting to 1.
+    // TODO: Add error handling for invalid location IDs.
     const locationId = Number(request.query.locationId || 1);
     const { items, tagRows, categoryRows } =
       await listMenuByLocation(locationId);

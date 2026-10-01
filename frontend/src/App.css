@@ -86,6 +86,44 @@
   margin: 20px auto 0;
 }
 
+.full-menu-section {
+  width: 100%;
+  padding: 0 40px 40px;
+}
+
+.full-menu-section h2 {
+  margin: 0 0 15px;
+  color: #9e2a2b;
+}
+
+.menu-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 20px;
+}
+
+.menu-card {
+  width: 100%;
+  padding: 20px;
+  background-color: white;
+  border: 1px solid #cccccc;
+}
+
+.menu-card.today {
+  border: 3px solid #f4b400;
+}
+
+.menu-card h3 {
+  margin: 0 0 8px;
+  color: #9e2a2b;
+}
+
+.menu-card p {
+  margin: 8px 0;
+  font-size: 16px;
+  line-height: 1.5;
+}
+
 .location-section {
   width: 100%;
   padding: 40px;

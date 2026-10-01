@@ -1,7 +1,5 @@
 import pool from "../../utils/database.js";
 
-// TODO (auth): userId currently trusted from request body — must be replaced
-// with the authenticated users id once auth middleware exists.
 const createOrder = async (userId, locationId, items) => {
   const connection = await pool.getConnection();
 

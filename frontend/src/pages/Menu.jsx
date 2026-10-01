@@ -1,50 +1,52 @@
 import MenuCard from "../components/MenuCard";
+import { useLanguage } from "../i18n";
 
 const menu = [
   {
-    day: "Monday",
-    food: "Margherita",
+    day: { fi: "Maanantai", en: "Monday" },
+    food: { fi: "Margherita", en: "Margherita" },
     price: 10,
     dietary: ["L"],
   },
   {
-    day: "Tuesday",
-    food: "Pepperoni",
+    day: { fi: "Tiistai", en: "Tuesday" },
+    food: { fi: "Pepperoni", en: "Pepperoni" },
     price: 12,
     dietary: ["L"],
   },
   {
-    day: "Wednesday",
-    food: "Americana",
+    day: { fi: "Keskiviikko", en: "Wednesday" },
+    food: { fi: "Americana", en: "Americana" },
     price: 13,
     dietary: ["L"],
   },
   {
-    day: "Thursday",
-    food: "Kebab",
+    day: { fi: "Torstai", en: "Thursday" },
+    food: { fi: "Kebab", en: "Kebab" },
     price: 13,
     dietary: ["L"],
   },
   {
-    day: "Friday",
-    food: "Salami",
+    day: { fi: "Perjantai", en: "Friday" },
+    food: { fi: "Salami", en: "Salami" },
     price: 12,
     dietary: ["L"],
   },
 ];
 
 function Menu() {
+  const { language, t } = useLanguage();
   const today = new Date().getDay();
 
   return (
     <main className="home">
-      <h2>Viikon ruokalista</h2>
+      <h2>{t.menu.title}</h2>
       <div className="menu-grid">
         {menu.map((item, index) => (
           <MenuCard
-            key={item.day}
-            day={item.day}
-            food={item.food}
+            key={item.day[language]}
+            day={item.day[language]}
+            food={item.food[language]}
             price={item.price}
             dietary={item.dietary}
             isToday={today === index + 1}

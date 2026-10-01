@@ -1,20 +1,24 @@
 import { useState } from "react";
 
+import { useLanguage } from "../i18n";
+
 function Admin() {
+  const { language, t } = useLanguage();
+
   const [paivat] = useState([
-    { nimi: "Maanantai", ruoat: "[Ruoka 1] · [Ruoka 2]" },
-    { nimi: "Tiistai", ruoat: "[Ruoka 1] · [Ruoka 2]" },
-    { nimi: "Keskiviikko", ruoat: "[Ruoka 1] · [Ruoka 2]" },
-    { nimi: "Torstai", ruoat: "[Ruoka 1] · [Ruoka 2]" },
-    { nimi: "Perjantai", ruoat: "[Ruoka 1] · [Ruoka 2]" },
+    { nimi: { fi: "Maanantai", en: "Monday" }, ruoat: "[Ruoka 1] · [Ruoka 2]" },
+    { nimi: { fi: "Tiistai", en: "Tuesday" }, ruoat: "[Ruoka 1] · [Ruoka 2]" },
+    { nimi: { fi: "Keskiviikko", en: "Wednesday" }, ruoat: "[Ruoka 1] · [Ruoka 2]" },
+    { nimi: { fi: "Torstai", en: "Thursday" }, ruoat: "[Ruoka 1] · [Ruoka 2]" },
+    { nimi: { fi: "Perjantai", en: "Friday" }, ruoat: "[Ruoka 1] · [Ruoka 2]" },
   ]);
 
   const [valittu, setValittu] = useState(null);
 
   return (
     <div className="home">
-      <h2>Ruokalistan muokkaus</h2>
-      <p>Valitse päivä ja muokkaa sen ruokia.</p>
+      <h2>{t.admin.managementTitle}</h2>
+      <p>{t.admin.managementSubtitle}</p>
 
       {valittu && (
         <div
@@ -31,27 +35,29 @@ function Admin() {
             aria-labelledby="admin-editor-title"
           >
             <div className="admin-editor-heading">
-              <h2 id="admin-editor-title">Muokkaa: {valittu.nimi}</h2>
+              <h2 id="admin-editor-title">
+                {t.admin.edit}: {valittu.nimi[language]}
+              </h2>
               <button
                 className="btn-secondary"
                 type="button"
                 onClick={() => setValittu(null)}
               >
-                Sulje
+                {t.admin.close}
               </button>
             </div>
 
             <div className="admin-form">
-              <label htmlFor="nimi">Ruoan nimi</label>
+              <label htmlFor="nimi">{t.admin.editFood}</label>
               <input id="nimi" type="text" />
 
-              <label htmlFor="kuvaus">Kuvaus</label>
+              <label htmlFor="kuvaus">{t.admin.editDescription}</label>
               <textarea id="kuvaus" />
 
-              <label htmlFor="hinta">Hinta</label>
+              <label htmlFor="hinta">{t.admin.editPrice}</label>
               <input id="hinta" type="number" min="0" step="0.01" inputMode="decimal" />
 
-              <label htmlFor="ruokavalio">Ruokavaliomerkinnät</label>
+              <label htmlFor="ruokavalio">{t.admin.editDietary}</label>
               <select id="ruokavalio">
                 <option>G — Gluteeniton</option>
                 <option>VEG — Kasvisruoka</option>
@@ -59,7 +65,9 @@ function Admin() {
                 <option>L — Laktoositon</option>
               </select>
 
-              <button className="btn" type="button">Tallenna muutokset</button>
+              <button className="btn" type="button">
+                {t.admin.save}
+              </button>
             </div>
           </section>
         </div>
@@ -67,18 +75,17 @@ function Admin() {
 
       <div className="admin-list">
         {paivat.map((paiva) => (
-          <div className="admin-row" key={paiva.nimi}>
+          <div className="admin-row" key={paiva.nimi[language]}>
             <div>
-              <strong>{paiva.nimi}</strong>
+              <strong>{paiva.nimi[language]}</strong>
               <div className="admin-meta">{paiva.ruoat}</div>
             </div>
             <button className="btn-secondary" onClick={() => setValittu(paiva)}>
-              Muokkaa
+              {t.admin.edit}
             </button>
           </div>
         ))}
       </div>
-
     </div>
   );
 }

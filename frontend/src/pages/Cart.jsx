@@ -1,6 +1,9 @@
 import { useState } from "react";
 
+import { useLanguage } from "../i18n";
+
 function Cart() {
+  const { t } = useLanguage();
   const [cart, setCart] = useState(
     JSON.parse(localStorage.getItem("cart")) || []
   );
@@ -16,10 +19,10 @@ function Cart() {
 
   return (
     <main className="cart-page">
-      <h2>Shopping Cart</h2>
+      <h2>{t.cart.title}</h2>
 
       {cart.length === 0 ? (
-        <p>Your cart is empty.</p>
+        <p>{t.cart.empty}</p>
       ) : (
         <>
           <div className="cart-list">
@@ -37,7 +40,7 @@ function Cart() {
                   className="btn-secondary"
                   onClick={() => removeItem(index)}
                 >
-                  Remove
+                  {t.cart.remove}
                 </button>
               </div>
             ))}
@@ -45,7 +48,7 @@ function Cart() {
 
           <div className="cart-total">
             <strong>
-              Total: {total.toFixed(2).replace(".", ",")} €
+              {t.cart.total}: {total.toFixed(2).replace(".", ",")} €
             </strong>
           </div>
         </>

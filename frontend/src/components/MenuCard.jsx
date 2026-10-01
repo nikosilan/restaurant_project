@@ -1,7 +1,11 @@
+import { useLanguage } from "../i18n";
+
 function MenuCard({ day, food, price, dietary, isToday }) {
+  const { t } = useLanguage();
+
   return (
     <article className={isToday ? "menu-card today" : "menu-card"}>
-      {isToday && <span>Today</span>}
+      {isToday && <span>{t.menu.today}</span>}
 
       <h3>{day}</h3>
 
@@ -9,7 +13,9 @@ function MenuCard({ day, food, price, dietary, isToday }) {
 
       <p>{price} €</p>
 
-      <p>Dietary: {dietary.join(", ")}</p>
+      <p>
+        {t.menu.dietary} {dietary.join(", ")}
+      </p>
     </article>
   );
 }

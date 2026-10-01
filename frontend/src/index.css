@@ -52,7 +52,7 @@ nav h1 img {
 .nav-links {
   display: flex;
   align-items: center;
-  gap: 25px;
+  gap: 12px;
 }
 
 .nav-links a {
@@ -65,9 +65,38 @@ nav h1 img {
   text-decoration: underline;
 }
 
+.language-switcher {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-left: 2px;
+}
+
+.language-button {
+  padding: 5px 8px;
+  border: 1px solid rgb(255 255 255 / 75%);
+  background: transparent;
+  color: white;
+  font-size: 11px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.language-button.active {
+  background: white;
+  color: #9e2a2b;
+  border-color: white;
+}
+
+.language-button:hover {
+  background: rgba(212, 162, 25, 0.363);
+}
+
 .cart-link {
   display: flex;
   align-items: center;
+  margin-left: 2px;
 }
 
 .cart-link img {

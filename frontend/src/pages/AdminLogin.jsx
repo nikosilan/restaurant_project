@@ -1,10 +1,13 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
+import { useLanguage } from "../i18n";
+
 function AdminLogin() {
   const [tunnus, setTunnus] = useState("");
   const [salasana, setSalasana] = useState("");
   const navigate = useNavigate();
+  const { t } = useLanguage();
 
   const kirjaudu = () => {
     navigate("/admin");
@@ -12,11 +15,11 @@ function AdminLogin() {
 
   return (
     <div className="home">
-      <h2>Kirjaudu ylläpitoon</h2>
-      <p>Vain henkilökunnalle.</p>
+      <h2>{t.admin.loginTitle}</h2>
+      <p>{t.admin.loginSubtitle}</p>
 
       <div className="admin-form">
-        <label htmlFor="tunnus">Käyttäjätunnus</label>
+        <label htmlFor="tunnus">{t.admin.username}</label>
         <input
           id="tunnus"
           type="text"
@@ -24,7 +27,7 @@ function AdminLogin() {
           onChange={(e) => setTunnus(e.target.value)}
         />
 
-        <label htmlFor="salasana">Salasana</label>
+        <label htmlFor="salasana">{t.admin.password}</label>
         <input
           id="salasana"
           type="password"
@@ -33,7 +36,7 @@ function AdminLogin() {
         />
 
         <button className="btn" onClick={kirjaudu}>
-          Kirjaudu sisään
+          {t.admin.loginButton}
         </button>
       </div>
     </div>

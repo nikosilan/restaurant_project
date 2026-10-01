@@ -1,4 +1,7 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
+import { MapContainer, Marker, Popup, TileLayer } from "react-leaflet";
+import "leaflet/dist/leaflet.css";
 
 const pizzaImages = [
   {
@@ -71,6 +74,7 @@ function Home() {
   const [selectedDay, setSelectedDay] = useState(
     today === 0 ? 6 : today - 1
   );
+  const [addedPizza, setAddedPizza] = useState(null);
 
   const changeImage = (direction) => {
     setActiveImage((current) => {
@@ -102,12 +106,12 @@ function Home() {
 
   const addToCart = () => {
     const cart = JSON.parse(localStorage.getItem("cart")) || [];
+    const pizza = menu[selectedDay];
 
-    cart.push(menu[selectedDay]);
+    cart.push(pizza);
 
     localStorage.setItem("cart", JSON.stringify(cart));
-
-    alert("Tuote lisätty ostoskoriin!");
+    setAddedPizza(pizza);
   };
 
   const currentMenu = menu[selectedDay];
@@ -216,16 +220,73 @@ function Home() {
         </section>
       </main>
 
+        {addedPizza && (
+          <div
+            className="cart-confirmation-backdrop"
+            role="presentation"
+            onMouseDown={(event) => {
+              if (event.target === event.currentTarget) setAddedPizza(null);
+            }}
+          >
+            <section
+              className="cart-confirmation-dialog"
+              role="dialog"
+              aria-modal="true"
+              aria-labelledby="cart-confirmation-title"
+            >
+              <button
+                className="cart-confirmation-close"
+                type="button"
+                aria-label="Sulje"
+                onClick={() => setAddedPizza(null)}
+              >
+                ×
+              </button>
+              <h2 id="cart-confirmation-title">Lisätty ostoskoriin!</h2>
+              <div className="cart-confirmation-item">
+                <div>
+                  <strong>{addedPizza.name}</strong>
+                  <span>{addedPizza.price.toFixed(2).replace(".", ",")} €</span>
+                </div>
+              </div>
+              <button
+                className="cart-confirmation-continue"
+                type="button"
+                onClick={() => setAddedPizza(null)}
+              >
+                Jatka ostoksia
+              </button>
+              <Link
+                className="cart-confirmation-link"
+                to="/cart"
+                onClick={() => setAddedPizza(null)}
+              >
+                Siirry ostoskoriin
+              </Link>
+            </section>
+          </div>
+        )}
+
       <section className="location-section">
         <h2>Sijainti</h2>
 
         <p>Pizzeria Napoli</p>
         <p>Kivenlahdentie 10, 02320 Espoo</p>
 
-        <iframe
-          title="Pizzeria Napolin sijainti kartalla"
-          src="https://www.openstreetmap.org/export/embed.html?bbox=24.643%2C60.178%2C24.673%2C60.188&layer=mapnik&marker=60.183%2C24.658"
-        ></iframe>
+        <MapContainer
+          className="location-map"
+          center={[60.183, 24.658]}
+          zoom={15}
+          scrollWheelZoom={false}
+        >
+          <TileLayer
+            attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>-tekijät'
+            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+          />
+          <Marker position={[60.183, 24.658]}>
+            <Popup>Pizzeria Napoli</Popup>
+          </Marker>
+        </MapContainer>
       </section>
     </>
   );

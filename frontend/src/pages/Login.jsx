@@ -1,31 +1,26 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 
 function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
+  const { login } = useAuth();
+  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setMessage("");
 
-    try {
-      const response = await fetch("/api/auth/login", {
-        method: "POST",
-        headers: { "Content-type": "application/json" },
-        body: JSON.stringify({ email, password }),
-      });
-      const data = await response.json();
+    const result = await login(email, password);
 
-      if (!response.ok) {
-        setMessage(data.error);
-        return;
-      }
-      setMessage(`Logged in as ${data.name}`);
-    } catch {
-      setMessage("could not connect to server.");
+    if (!result.success) {
+      setMessage(result.message);
+      return;
     }
+
+    navigate("/");
   };
 
   return (

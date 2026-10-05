@@ -1,6 +1,7 @@
 import { useState } from "react";
 
 function Admin() {
+  // TODO: Load the editable menu schedule from the database.
   const [paivat] = useState([
     { nimi: "Maanantai", ruoat: "[Ruoka 1] · [Ruoka 2]" },
     { nimi: "Tiistai", ruoat: "[Ruoka 1] · [Ruoka 2]" },
@@ -44,6 +45,7 @@ function Admin() {
             <label htmlFor="hinta">Hinta</label>
             <input id="hinta" type="text" />
 
+            {/* TODO: Load dietary-tag options from the database. */}
             <label htmlFor="ruokavalio">Ruokavaliomerkinnät</label>
             <select id="ruokavalio">
               <option>G — Gluteeniton</option>

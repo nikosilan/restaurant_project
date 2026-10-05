@@ -1,3 +1,7 @@
+import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
+import "dotenv/config";
+
 import { createUser, findUserByEmail } from "../models/user-model.js";
 
 const postRegister = async (request, response, next) => {
@@ -35,9 +39,12 @@ const postRegister = async (request, response, next) => {
       .json({ error: "Password must be at least 8 characters." });
     return;
   }
+
   const normalisedEmail = email.trim().toLowerCase();
   try {
-    const userId = await createUser(name, normalisedEmail, password);
+    // Hash the password before storing it in the database
+    const passwordHash = await bcrypt.hash(password, 10);
+    const userId = await createUser(name, normalisedEmail, passwordHash);
 
     response.status(201).json({ id: userId });
   } catch (error) {
@@ -71,10 +78,33 @@ const postLogin = async (request, response, next) => {
       return;
     }
 
-    response.json({ id: user.id, name: user.name, email: user.email });
+    const passwordMatch = await bcrypt.compare(password, user.password_hash);
+    if (!passwordMatch) {
+      response.status(401).json({ error: "Invalid email or password." });
+      return;
+    }
+
+    // Never include sensitive information like password hashes in the JWT payload
+    const safeUser = {
+      id: user.id,
+      name: user.name,
+      email: user.email,
+      role: user.role,
+      language: user.language,
+    };
+
+    const token = jwt.sign(safeUser, process.env.JWT_SECRET, {
+      expiresIn: "24h",
+    });
+
+    response.json({ user: safeUser, token });
   } catch (error) {
     next(error);
   }
 };
 
-export { postRegister, postLogin };
+const getMe = (request, response) => {
+  response.json({ user: response.locals.user });
+};
+
+export { postRegister, postLogin, getMe };

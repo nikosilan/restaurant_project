@@ -1,7 +1,8 @@
 import { createOrder } from "../models/orders-model.js";
 
 const postOrder = async (request, response, next) => {
-  const { userId, locationId, items } = request.body;
+  const { locationId, items } = request.body;
+  const userId = response.locals.user?.id; // Get the authenticated user's ID from response.locals
 
   if (
     !Number.isInteger(Number(userId)) ||

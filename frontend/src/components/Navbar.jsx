@@ -1,7 +1,15 @@
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 
 function Navbar() {
   const { pathname } = useLocation();
+  const { user, logout } = useAuth();
+  const navigate = useNavigate();
+
+  const logOut = () => {
+    logout();
+    navigate("/");
+  };
 
   return (
     <nav>
@@ -13,10 +21,23 @@ function Navbar() {
       </Link>
       <div className="nav-links">
         {pathname !== "/" && <Link to="/">Home</Link>}
-        {pathname !== "/menu" && <Link to="/menu">Menu</Link>}
-        {pathname !== "/login" && <Link to="/login">log in</Link>}
-        {pathname !== "/admin-login" && pathname !== "/admin" && (
+
+        {!user && pathname !== "/login" && <Link to="/login">log in</Link>}
+        {!user && pathname !== "/register" && (
+          <Link to="/register">register</Link>
+        )}
+        {!user && pathname !== "/admin-login" && pathname !== "/admin" && (
           <Link to="/admin-login">Admin</Link>
+        )}
+
+        {user?.role === "admin" && pathname !== "/admin" && (
+          <Link to="/admin">Admin</Link>
+        )}
+
+        {user && (
+          <button className="nav-btn" onClick={logOut}>
+            log out
+          </button>
         )}
 
         {pathname !== "/cart" && (

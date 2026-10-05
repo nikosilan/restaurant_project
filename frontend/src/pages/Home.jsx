@@ -1,4 +1,6 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
+
+import { useMenu } from "../hooks/useMenu";
 
 const pizzaImages = [
   {
@@ -18,6 +20,10 @@ const pizzaImages = [
   },
 ];
 
+// TODO: Load the daily menu from the database instead of keeping a second menu here.
+// Also the whole Home.jsx is a bit messy after the quick implementation I did, we should fix that before submission.
+// Today is a plain number from 0 to 6, where 0 is Sunday and 6 is Saturday. The menu array uses 0 for Monday and 6 for Sunday, so we need to adjust the index accordingly.
+// hardcoded menu includes lauantai and sunnuntai, but the database has five values only (Monday to Friday).
 const menu = [
   {
     day: "Maanantai",
@@ -64,22 +70,27 @@ const menu = [
 ];
 
 function Home() {
-  const [selectedDay, setSelectedDay] = useState(0);
+  const today = new Date().getDay();
+
   const [activeImage, setActiveImage] = useState(0);
+  const [selectedDay, setSelectedDay] = useState(today === 0 ? 6 : today - 1);
 
-  useEffect(() => {
-    const timer = window.setInterval(() => {
-      setActiveImage((current) => (current + 1) % pizzaImages.length);
-    }, 5000);
-
-    return () => window.clearInterval(timer);
-  }, []);
+  const { menu: fullMenu, loading: isFullMenuLoading, error: fullMenuError } = useMenu();
 
   const changeImage = (direction) => {
-    setActiveImage(
-      (current) =>
-        (current + direction + pizzaImages.length) % pizzaImages.length,
-    );
+    setActiveImage((current) => {
+      const next = current + direction;
+
+      if (next < 0) {
+        return pizzaImages.length - 1;
+      }
+
+      if (next >= pizzaImages.length) {
+        return 0;
+      }
+
+      return next;
+    });
   };
 
   const previousDay = () => {
@@ -124,9 +135,11 @@ function Home() {
                   event.currentTarget.src = "/pizza.svg";
                 }}
               />
+
               <h2>{image.title}</h2>
             </div>
           ))}
+
           <button
             className="pizza-carousel-arrow previous"
             type="button"
@@ -135,6 +148,7 @@ function Home() {
           >
             ‹
           </button>
+
           <button
             className="pizza-carousel-arrow next"
             type="button"
@@ -143,6 +157,7 @@ function Home() {
           >
             ›
           </button>
+
           <div className="pizza-carousel-dots">
             {pizzaImages.map((image, index) => (
               <button
@@ -158,14 +173,22 @@ function Home() {
         </section>
 
         <section className="menu-section">
-          <div className="day-selector">
-            <button className="day-arrow" type="button" aria-label="Edellinen päivä" onClick={previousDay}>
+          <div className="day-navigation">
+            <button type="button" className="day-button" onClick={previousDay}>
               ←
             </button>
 
-            <h2>{currentMenu.day}</h2>
+            <div
+              className={
+                selectedDay === (today === 0 ? 6 : today - 1)
+                  ? "day-name today"
+                  : "day-name"
+              }
+            >
+              {currentMenu.day}
+            </div>
 
-            <button className="day-arrow" type="button" aria-label="Seuraava päivä" onClick={nextDay}>
+            <button type="button" className="day-button" onClick={nextDay}>
               →
             </button>
           </div>
@@ -177,16 +200,51 @@ function Home() {
 
             <strong>{currentMenu.price.toFixed(2).replace(".", ",")} €</strong>
 
-            <button className="btn" onClick={addToCart}>
-              Lisää ostoskoriin
+            <button type="button" className="btn" onClick={addToCart}>
+              Add to cart
             </button>
           </div>
         </section>
       </main>
 
+      <section className="full-menu-section">
+        <h2>Full menu</h2>
+
+        {isFullMenuLoading && <p>Loading menu...</p>}
+        {fullMenuError && <p role="status">{fullMenuError}</p>}
+
+        <div className="menu-grid">
+          {fullMenu.map((item) => {
+            const dietaryNames = item.dietary.map(
+              (tag) => tag.name_en || tag.code || tag,
+            );
+
+            return (
+              <article
+                className={
+                  item.day_name === today || item.day_name === "Every day"
+                    ? "menu-card today"
+                    : "menu-card"
+                }
+                key={item.id || item.day_name}
+              >
+                {(item.day_name === today || item.day_name === "Every day") && (
+                  <span>Today</span>
+                )}
+                <h3>{item.day_name}</h3>
+                <p>{item.name}</p>
+                <p>{item.price} €</p>
+                <p>Dietary: {dietaryNames.join(", ")}</p>
+              </article>
+            );
+          })}
+        </div>
+      </section>
+
       <section className="location-section">
         <h2>Sijainti</h2>
 
+        {/* TODO: Load the restaurant name and address from the locations API. */}
         <p>Pizzeria Napoli</p>
         <p>Kivenlahdentie 10, 02320 Espoo</p>
 

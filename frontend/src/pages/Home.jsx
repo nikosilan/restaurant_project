@@ -18,16 +18,13 @@ const pizzaImages = [
   },
 ];
 
-// TODO: Load the daily menu from the database instead of keeping a second menu here.
-// Also the whole Home.jsx is a bit messy after the quick implementation I did, we should fix that before submission.
-// Today is a plain number from 0 to 6, where 0 is Sunday and 6 is Saturday. The menu array uses 0 for Monday and 6 for Sunday, so we need to adjust the index accordingly.
-// hardcoded menu includes lauantai and sunnuntai, but the database has five values only (Monday to Friday).
-const menu = [
+// This fallback keeps the daily menu usable while the API is unavailable.
+const fallbackDailyMenu = [
   {
     day: "Maanantai",
-    name: "Pepperonipizza",
-    description: "Tomaattikastike, mozzarella ja pepperoni",
-    price: 12.9,
+    name: "Margherita-pizza",
+    description: "Tomaattikastike, mozzarella ja basilika",
+    price: 10,
   },
   {
     day: "Tiistai",
@@ -67,6 +64,17 @@ const menu = [
   },
 ];
 
+const weekdayNames = {
+  Monday: "Maanantai",
+  Tuesday: "Tiistai",
+  Wednesday: "Keskiviikko",
+  Thursday: "Torstai",
+  Friday: "Perjantai",
+};
+
+const weekdayOrder = Object.keys(weekdayNames);
+const getTodayMenuIndex = (day) => (day >= 1 && day <= 5 ? day - 1 : 0);
+
 // Keep a small fallback so the homepage remains usable when the API is offline.
 // Remove this before submission, as the menu should be loaded from the database instead.
 const fallbackFullMenu = [
@@ -104,13 +112,15 @@ const fallbackFullMenu = [
 
 function Home() {
   const today = new Date().getDay();
+  const todayName = weekdayOrder[getTodayMenuIndex(today)];
 
   const [activeImage, setActiveImage] = useState(0);
+  const [dailyMenu, setDailyMenu] = useState(fallbackDailyMenu);
   const [fullMenu, setFullMenu] = useState(fallbackFullMenu);
   const [isFullMenuLoading, setIsFullMenuLoading] = useState(true);
   const [fullMenuError, setFullMenuError] = useState("");
 
-  const [selectedDay, setSelectedDay] = useState(today === 0 ? 6 : today - 1);
+  const [selectedDay, setSelectedDay] = useState(getTodayMenuIndex(today));
 
   useEffect(() => {
     fetch("/api/menu")
@@ -121,15 +131,45 @@ function Home() {
         return response.json();
       })
       .then((items) => {
-        setFullMenu(
-          items.map((item) => ({
+        const mappedItems = items.map((item) => ({
+          id: item.id,
+          day: item.day_name,
+          food: item.name,
+          price: Number(item.price),
+          dietary: item.dietary || [],
+        }));
+
+        setFullMenu(mappedItems);
+
+        const pizzaItems = items
+          .filter(
+            (item) =>
+              weekdayOrder.includes(item.day_name) &&
+              item.categories?.some((category) => category.name_en === "Pizza"),
+          )
+          .sort(
+            (first, second) =>
+              weekdayOrder.indexOf(first.day_name) -
+              weekdayOrder.indexOf(second.day_name),
+          )
+          .map((item) => ({
             id: item.id,
-            day: item.day_name,
-            food: item.name,
+            day: weekdayNames[item.day_name] || item.day_name,
+            name: item.name_fi || item.name,
+            description: item.description_fi || item.description,
             price: Number(item.price),
-            dietary: item.dietary || [],
-          })),
-        );
+          }));
+
+        if (pizzaItems.length > 0) {
+          setDailyMenu(pizzaItems);
+          const todayName =
+            weekdayNames[weekdayOrder[getTodayMenuIndex(today)]];
+          const todayIndex = pizzaItems.findIndex(
+            (item) => item.day === todayName,
+          );
+
+          setSelectedDay(todayIndex >= 0 ? todayIndex : 0);
+        }
       })
       .catch(() =>
         setFullMenuError(
@@ -137,7 +177,7 @@ function Home() {
         ),
       )
       .finally(() => setIsFullMenuLoading(false));
-  }, []);
+  }, [today]);
 
   const changeImage = (direction) => {
     setActiveImage((current) => {
@@ -157,27 +197,27 @@ function Home() {
 
   const previousDay = () => {
     setSelectedDay((current) =>
-      current === 0 ? menu.length - 1 : current - 1,
+      current === 0 ? dailyMenu.length - 1 : current - 1,
     );
   };
 
   const nextDay = () => {
     setSelectedDay((current) =>
-      current === menu.length - 1 ? 0 : current + 1,
+      current === dailyMenu.length - 1 ? 0 : current + 1,
     );
   };
 
   const addToCart = () => {
     const cart = JSON.parse(localStorage.getItem("cart")) || [];
 
-    cart.push(menu[selectedDay]);
+    cart.push(dailyMenu[selectedDay]);
 
     localStorage.setItem("cart", JSON.stringify(cart));
 
     alert("Tuote lisätty ostoskoriin!");
   };
 
-  const currentMenu = menu[selectedDay];
+  const currentMenu = dailyMenu[selectedDay];
 
   return (
     <>
@@ -187,8 +227,7 @@ function Home() {
             <div
               className={`pizza-slide${index === activeImage ? " active" : ""}`}
               key={image.src}
-              aria-hidden={index !== activeImage}
-            >
+              aria-hidden={index !== activeImage}>
               <img
                 src={image.src}
                 alt={image.alt}
@@ -206,8 +245,7 @@ function Home() {
             className="pizza-carousel-arrow previous"
             type="button"
             aria-label="Edellinen kuva"
-            onClick={() => changeImage(-1)}
-          >
+            onClick={() => changeImage(-1)}>
             ‹
           </button>
 
@@ -215,8 +253,7 @@ function Home() {
             className="pizza-carousel-arrow next"
             type="button"
             aria-label="Seuraava kuva"
-            onClick={() => changeImage(1)}
-          >
+            onClick={() => changeImage(1)}>
             ›
           </button>
 
@@ -242,11 +279,10 @@ function Home() {
 
             <div
               className={
-                selectedDay === (today === 0 ? 6 : today - 1)
+                selectedDay === getTodayMenuIndex(today)
                   ? "day-name today"
                   : "day-name"
-              }
-            >
+              }>
               {currentMenu.day}
             </div>
 
@@ -280,19 +316,13 @@ function Home() {
             const dietaryNames = item.dietary.map(
               (tag) => tag.name_en || tag.code || tag,
             );
+            const isToday = item.day === todayName || item.day === "Every day";
 
             return (
               <article
-                className={
-                  item.day === today || item.day === "Every day"
-                    ? "menu-card today"
-                    : "menu-card"
-                }
-                key={item.id || item.day}
-              >
-                {(item.day === today || item.day === "Every day") && (
-                  <span>Today</span>
-                )}
+                className={isToday ? "menu-card today" : "menu-card"}
+                key={item.id || item.day}>
+                {isToday && <span>Today</span>}
                 <h3>{item.day}</h3>
                 <p>{item.food}</p>
                 <p>{item.price} €</p>
@@ -312,8 +342,7 @@ function Home() {
 
         <iframe
           title="Pizzeria Napolin sijainti kartalla"
-          src="https://www.openstreetmap.org/export/embed.html?bbox=24.643%2C60.178%2C24.673%2C60.188&layer=mapnik&marker=60.183%2C24.658"
-        ></iframe>
+          src="https://www.openstreetmap.org/export/embed.html?bbox=24.643%2C60.178%2C24.673%2C60.188&layer=mapnik&marker=60.183%2C24.658"></iframe>
       </section>
     </>
   );

@@ -20,62 +20,37 @@ const pizzaImages = [
   },
 ];
 
-// TODO: Load the daily menu from the database instead of keeping a second menu here.
-// Also the whole Home.jsx is a bit messy after the quick implementation I did, we should fix that before submission.
-// Today is a plain number from 0 to 6, where 0 is Sunday and 6 is Saturday. The menu array uses 0 for Monday and 6 for Sunday, so we need to adjust the index accordingly.
-// hardcoded menu includes lauantai and sunnuntai, but the database has five values only (Monday to Friday).
-const menu = [
-  {
-    day: "Maanantai",
-    name: "Pepperonipizza",
-    description: "Tomaattikastike, mozzarella ja pepperoni",
-    price: 12.9,
-  },
-  {
-    day: "Tiistai",
-    name: "Kinkkupizza",
-    description: "Tomaattikastike, mozzarella ja kinkku",
-    price: 12.9,
-  },
-  {
-    day: "Keskiviikko",
-    name: "Kebabpizza",
-    description: "Tomaattikastike, mozzarella, kebab ja sipuli",
-    price: 13.9,
-  },
-  {
-    day: "Torstai",
-    name: "Kanapizza ananaksella",
-    description: "Tomaattikastike, mozzarella, kana ja ananas",
-    price: 13.9,
-  },
-  {
-    day: "Perjantai",
-    name: "Opera-pizza",
-    description: "Tomaattikastike, mozzarella, kinkku ja tonnikala",
-    price: 13.9,
-  },
-  {
-    day: "Lauantai",
-    name: "Neljän juuston pizza",
-    description: "Mozzarella, gorgonzola, parmesaani ja emmental",
-    price: 14.9,
-  },
-  {
-    day: "Sunnuntai",
-    name: "Margherita-pizza",
-    description: "Tomaattikastike, mozzarella ja basilika",
-    price: 11.9,
-  },
+const dayNames = [
+  "Monday",
+  "Tuesday",
+  "Wednesday",
+  "Thursday",
+  "Friday",
+  "Saturday",
+  "Sunday",
+];
+const dayNamesFi = [
+  "Maanantai",
+  "Tiistai",
+  "Keskiviikko",
+  "Torstai",
+  "Perjantai",
+  "Lauantai",
+  "Sunnuntai",
 ];
 
 function Home() {
   const today = new Date().getDay();
+  const todayIndex = today === 0 ? 6 : today - 1;
 
   const [activeImage, setActiveImage] = useState(0);
-  const [selectedDay, setSelectedDay] = useState(today === 0 ? 6 : today - 1);
+  const [selectedDay, setSelectedDay] = useState(todayIndex);
 
-  const { menu: fullMenu, loading: isFullMenuLoading, error: fullMenuError } = useMenu();
+  const {
+    menu: fullMenu,
+    loading: isFullMenuLoading,
+    error: fullMenuError,
+  } = useMenu();
 
   const changeImage = (direction) => {
     setActiveImage((current) => {
@@ -95,27 +70,37 @@ function Home() {
 
   const previousDay = () => {
     setSelectedDay((current) =>
-      current === 0 ? menu.length - 1 : current - 1,
+      current === 0 ? dayNames.length - 1 : current - 1,
     );
   };
 
   const nextDay = () => {
     setSelectedDay((current) =>
-      current === menu.length - 1 ? 0 : current + 1,
+      current === dayNames.length - 1 ? 0 : current + 1,
     );
   };
 
   const addToCart = () => {
     const cart = JSON.parse(localStorage.getItem("cart")) || [];
 
-    cart.push(menu[selectedDay]);
+    cart.push(currentMenu);
 
     localStorage.setItem("cart", JSON.stringify(cart));
 
     alert("Tuote lisätty ostoskoriin!");
   };
 
-  const currentMenu = menu[selectedDay];
+  const dailyItem = fullMenu.find(
+    (item) => item.day_name === dayNames[selectedDay],
+  );
+
+  const currentMenu = dailyItem
+    ? {
+        name: dailyItem.name_fi,
+        description: dailyItem.description_fi,
+        price: Number(dailyItem.price),
+      }
+    : null;
 
   return (
     <>
@@ -180,12 +165,10 @@ function Home() {
 
             <div
               className={
-                selectedDay === (today === 0 ? 6 : today - 1)
-                  ? "day-name today"
-                  : "day-name"
+                selectedDay === todayIndex ? "day-name today" : "day-name"
               }
             >
-              {currentMenu.day}
+              {dayNamesFi[selectedDay]}
             </div>
 
             <button type="button" className="day-button" onClick={nextDay}>
@@ -194,15 +177,23 @@ function Home() {
           </div>
 
           <div className="day-menu">
-            <h3>{currentMenu.name}</h3>
+            {currentMenu ? (
+              <>
+                <h3>{currentMenu.name}</h3>
 
-            <p>{currentMenu.description}</p>
+                <p>{currentMenu.description}</p>
 
-            <strong>{currentMenu.price.toFixed(2).replace(".", ",")} €</strong>
+                <strong>
+                  {currentMenu.price.toFixed(2).replace(".", ",")} €
+                </strong>
 
-            <button type="button" className="btn" onClick={addToCart}>
-              Add to cart
-            </button>
+                <button type="button" className="btn" onClick={addToCart}>
+                  Add to cart
+                </button>
+              </>
+            ) : (
+              <p>Ei lounasta tänä päivänä.</p>
+            )}
           </div>
         </section>
       </main>
@@ -222,15 +213,15 @@ function Home() {
             return (
               <article
                 className={
-                  item.day_name === today || item.day_name === "Every day"
+                  item.day_name === dayNames[todayIndex] ||
+                  item.day_name === "Every day"
                     ? "menu-card today"
                     : "menu-card"
                 }
                 key={item.id || item.day_name}
               >
-                {(item.day_name === today || item.day_name === "Every day") && (
-                  <span>Today</span>
-                )}
+                {(item.day_name === dayNames[todayIndex] ||
+                  item.day_name === "Every day") && <span>Today</span>}
                 <h3>{item.day_name}</h3>
                 <p>{item.name}</p>
                 <p>{item.price} €</p>

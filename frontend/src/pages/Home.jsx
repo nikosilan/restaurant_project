@@ -371,11 +371,11 @@ function Home() {
 
         {/* TODO: Load the restaurant name and address from the locations API. */}
         <p>Pizzeria Napoli</p>
-        <p>Kivenlahdentie 10, 02320 Espoo</p>
+        <p>Lippajärventie 29, 02940 Espoo</p>
 
         <MapContainer
           className="location-map"
-          center={[60.183, 24.658]}
+          center={[60.231, 24.716]}
           zoom={15}
           scrollWheelZoom={false}
         >
@@ -384,7 +384,7 @@ function Home() {
             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
           />
 
-          <Marker position={[60.183, 24.658]}>
+          <Marker position={[60.23053, 24.71624]}>
             <Popup>Pizzeria Napoli</Popup>
           </Marker>
         </MapContainer>

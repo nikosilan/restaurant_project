@@ -52,7 +52,7 @@ nav h1 img {
 .nav-links {
   display: flex;
   align-items: center;
-  gap: 25px;
+  gap: 12px;
 }
 
 .nav-links a {
@@ -84,9 +84,38 @@ nav h1 img {
   text-decoration: underline;
 }
 
+.language-switcher {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-left: 2px;
+}
+
+.language-button {
+  padding: 5px 8px;
+  border: 1px solid rgb(255 255 255 / 75%);
+  background: transparent;
+  color: white;
+  font-size: 11px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.language-button.active {
+  background: white;
+  color: #9e2a2b;
+  border-color: white;
+}
+
+.language-button:hover {
+  background: rgba(212, 162, 25, 0.363);
+}
+
 .cart-link {
   display: flex;
   align-items: center;
+  margin-left: 2px;
 }
 
 .cart-link img {
@@ -246,62 +275,332 @@ nav h1 img {
   color: #ffffff;
 }
 
-@media (max-width: 600px) {
-  nav {
-    padding: 5px 12px;
-  }
+/* Päivän ruokalistan selaus */
 
-  nav h1 {
-    font-size: 20px;
-  }
-
-  nav h1 img {
-    width: 20px;
-    height: 20px;
-  }
-
-  .nav-links {
-    gap: 12px;
-    font-size: 14px;
-  }
-
-  .cart-link img {
-    width: 26px;
-    height: 26px;
-  }
-
-  .home {
-    padding: 28px 18px;
-  }
-
-  .pizza-carousel {
-    height: 250px;
-    margin-bottom: 24px;
-  }
-
-  .home .pizza-slide h2 {
-    right: 48px;
-    bottom: 36px;
-    left: 48px;
-  }
-
-  .pizza-carousel-arrow {
-    width: 36px;
-    height: 36px;
-  }
-
-  .home .day-selector {
-    gap: 8px;
-  }
-
-  .home .day-selector h2 {
-    min-width: 150px;
-  }
+.menu-section {
+  width: 100%;
 }
 
-.home p {
+.day-navigation {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  gap: 20px;
+}
+
+.day-button {
+  display: flex;
+  flex: 0 0 60px;
+  align-items: center;
+  justify-content: center;
+  width: 60px;
+  height: 45px;
+  margin: 0;
+  padding: 0;
+  font-family: Arial, sans-serif;
+  font-size: 24px;
+  font-weight: normal;
+  line-height: 1;
+  color: white;
+  background-color: #9e2a2b;
+  border: none;
+  cursor: pointer;
+}
+
+.day-button:hover {
+  background-color: #7d2122;
+}
+
+.day-name {
+  flex: 1;
+  text-align: center;
+  font-size: 24px;
+  font-weight: bold;
+  color: #333333;
+}
+
+.day-name.today {
+  color: #9e2a2b;
+}
+
+.day-menu {
+  margin-top: 20px;
+  padding: 24px;
+  background-color: #ffffff;
+  border: 1px solid #cccccc;
+}
+
+.day-menu h3 {
+  margin-top: 0;
+  margin-bottom: 10px;
+  color: #9e2a2b;
+}
+
+.day-menu p {
+  margin: 8px 0;
+}
+
+.day-menu strong {
+  display: block;
+  margin-top: 12px;
   font-size: 18px;
-  line-height: 1.6;
+}
+
+.day-menu .btn {
+  margin-top: 16px;
+}
+
+/* Koko viikon menu */
+
+.full-menu-section {
+  width: 100%;
+  padding: 0 40px 50px;
+}
+
+.full-menu-section h2 {
+  color: #9e2a2b;
+}
+
+.menu-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 20px;
+}
+
+.menu-card {
+  padding: 20px;
+  background-color: #ffffff;
+  border: 1px solid #cccccc;
+}
+
+.menu-card.today {
+  border: 2px solid #9e2a2b;
+}
+
+.menu-card h3 {
+  margin-top: 0;
+  color: #9e2a2b;
+}
+
+.menu-card p {
+  margin: 8px 0;
+}
+
+.menu-card span {
+  display: inline-block;
+  margin-bottom: 8px;
+  color: #9e2a2b;
+  font-weight: bold;
+}
+
+.location-section {
+  width: 100%;
+  padding: 0 40px 50px;
+}
+
+.location-section h2 {
+  color: #9e2a2b;
+}
+
+.location-section p {
+  margin: 8px 0;
+}
+
+.location-section iframe {
+  display: block;
+  width: 100%;
+  height: 350px;
+  margin-top: 20px;
+  border: 1px solid #cccccc;
+}
+
+.location-map {
+  display: block;
+  width: 100%;
+  height: 500px;
+  margin-top: 20px;
+  border: 1px solid #cccccc;
+}
+
+.cart-page {
+  width: 100%;
+  padding: 50px 40px;
+}
+
+.cart-page h2 {
+  color: #9e2a2b;
+}
+
+.cart-list {
+  width: 100%;
+}
+
+.cart-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 20px 0;
+  border-bottom: 1px solid #dddddd;
+}
+
+.cart-item:last-child {
+  border-bottom: none;
+}
+
+.cart-item h3 {
+  margin: 0 0 8px;
+  color: #9e2a2b;
+}
+
+.cart-item p {
+  margin: 5px 0;
+}
+
+.cart-total {
+  margin-top: 20px;
+  font-size: 20px;
+}
+
+
+.cart-confirmation-backdrop {
+  position: fixed;
+  z-index: 1100;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  background: rgb(0 0 0 / 45%);
+}
+
+.cart-confirmation-dialog {
+  position: relative;
+  width: min(100%, 380px);
+  padding: 24px;
+  border-top: 3px solid #f4a261;
+  background: #ffffff;
+  text-align: center;
+}
+
+.cart-confirmation-close {
+  position: absolute;
+  top: 6px;
+  right: 8px;
+  border: 0;
+  background: transparent;
+  color: #555555;
+  cursor: pointer;
+  font-size: 24px;
+}
+
+.cart-confirmation-kicker {
+  margin: 0 0 6px;
+  color: #9e2a2b;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.cart-confirmation-dialog h2 {
+  margin: 0 0 16px;
+  color: #9e2a2b;
+  font-size: 22px;
+}
+
+.cart-confirmation-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 16px;
+  padding: 10px;
+  border: 1px solid #cccccc;
+  text-align: left;
+}
+
+.cart-confirmation-item div {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.cart-confirmation-item strong {
+  color: #333333;
+}
+
+.cart-confirmation-item span {
+  color: #9e2a2b;
+  font-weight: bold;
+  white-space: nowrap;
+}
+
+.cart-confirmation-continue {
+  width: 100%;
+  min-height: 42px;
+  border: 0;
+  background: #9e2a2b;
+  color: #ffffff;
+  cursor: pointer;
+  font: inherit;
+  font-weight: bold;
+}
+
+.cart-confirmation-continue:hover {
+  background: #7d2122;
+}
+
+.cart-confirmation-link {
+  display: inline-block;
+  margin-top: 12px;
+  color: #9e2a2b;
+  font-weight: bold;
+  text-decoration: none;
+}
+
+.cart-confirmation-link:hover {
+  color: #f4a261;
+  text-decoration: underline;
+}
+
+.admin-modal-backdrop {
+  position: fixed;
+  z-index: 1000;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background: rgb(0 0 0 / 50%);
+}
+
+.admin-editor-dialog {
+  width: min(100%, 500px);
+  max-height: 90vh;
+  overflow-y: auto;
+  padding: 24px;
+  background: #ffffff;
+  border: 1px solid #cccccc;
+  box-shadow: 0 10px 35px rgb(0 0 0 / 25%);
+}
+
+.admin-editor-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.admin-editor-heading h2 {
+  margin: 0;
+  color: #9e2a2b;
+}
+
+.admin-editor-dialog .admin-form {
+  max-width: none;
 }
 
 .admin-form {
@@ -407,4 +706,97 @@ nav h1 img {
   flex-direction: column;
   align-items: center;
   padding-top: 60px;
+}
+
+.home p {
+  font-size: 18px;
+  line-height: 1.6;
+}
+
+@media (max-width: 600px) {
+  nav {
+    padding: 5px 12px;
+  }
+
+  nav h1 {
+    font-size: 20px;
+  }
+
+  nav h1 img {
+    width: 20px;
+    height: 20px;
+  }
+
+  .nav-links {
+    gap: 12px;
+    font-size: 14px;
+  }
+
+  .cart-link img {
+    width: 26px;
+    height: 26px;
+  }
+
+  .home {
+    padding: 28px 18px;
+  }
+
+  .pizza-carousel {
+    height: 250px;
+    margin-bottom: 24px;
+  }
+
+  .home .pizza-slide h2 {
+    right: 48px;
+    bottom: 36px;
+    left: 48px;
+  }
+
+  .pizza-carousel-arrow {
+    width: 36px;
+    height: 36px;
+  }
+
+  .home .day-selector {
+    gap: 8px;
+  }
+
+  .home .day-selector h2 {
+    min-width: 150px;
+  }
+
+  .day-button {
+    flex-basis: 50px;
+    width: 50px;
+    height: 42px;
+  }
+
+  .day-name {
+    font-size: 20px;
+  }
+
+  .full-menu-section,
+  .location-section {
+    padding-right: 18px;
+    padding-left: 18px;
+  }
+
+  .cart-item {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .cart-confirmation-item div {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .admin-modal-backdrop {
+    padding: 12px;
+  }
+
+  .admin-editor-dialog {
+    max-height: 95vh;
+    padding: 18px;
+  }
 }

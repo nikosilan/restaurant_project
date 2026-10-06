@@ -1,31 +1,16 @@
 import { useState } from "react";
-import { useLanguage } from "../i18n";
+
+import { useLanguage } from "../frontend/src/i18n";
 
 function Admin() {
   const { language, t } = useLanguage();
 
-  // TODO: Load the editable menu schedule from the database.
   const [paivat] = useState([
-    {
-      nimi: { fi: "Maanantai", en: "Monday" },
-      ruoat: "[Ruoka 1] · [Ruoka 2]",
-    },
-    {
-      nimi: { fi: "Tiistai", en: "Tuesday" },
-      ruoat: "[Ruoka 1] · [Ruoka 2]",
-    },
-    {
-      nimi: { fi: "Keskiviikko", en: "Wednesday" },
-      ruoat: "[Ruoka 1] · [Ruoka 2]",
-    },
-    {
-      nimi: { fi: "Torstai", en: "Thursday" },
-      ruoat: "[Ruoka 1] · [Ruoka 2]",
-    },
-    {
-      nimi: { fi: "Perjantai", en: "Friday" },
-      ruoat: "[Ruoka 1] · [Ruoka 2]",
-    },
+    { nimi: { fi: "Maanantai", en: "Monday" }, ruoat: "[Ruoka 1] · [Ruoka 2]" },
+    { nimi: { fi: "Tiistai", en: "Tuesday" }, ruoat: "[Ruoka 1] · [Ruoka 2]" },
+    { nimi: { fi: "Keskiviikko", en: "Wednesday" }, ruoat: "[Ruoka 1] · [Ruoka 2]" },
+    { nimi: { fi: "Torstai", en: "Thursday" }, ruoat: "[Ruoka 1] · [Ruoka 2]" },
+    { nimi: { fi: "Perjantai", en: "Friday" }, ruoat: "[Ruoka 1] · [Ruoka 2]" },
   ]);
 
   const [valittu, setValittu] = useState(null);
@@ -35,33 +20,12 @@ function Admin() {
       <h2>{t.admin.managementTitle}</h2>
       <p>{t.admin.managementSubtitle}</p>
 
-      <div className="admin-list">
-        {paivat.map((paiva) => (
-          <div className="admin-row" key={paiva.nimi[language]}>
-            <div>
-              <strong>{paiva.nimi[language]}</strong>
-              <div className="admin-meta">{paiva.ruoat}</div>
-            </div>
-
-            <button
-              className="btn-secondary"
-              type="button"
-              onClick={() => setValittu(paiva)}
-            >
-              {t.admin.edit}
-            </button>
-          </div>
-        ))}
-      </div>
-
       {valittu && (
         <div
           className="admin-modal-backdrop"
           role="presentation"
           onMouseDown={(event) => {
-            if (event.target === event.currentTarget) {
-              setValittu(null);
-            }
+            if (event.target === event.currentTarget) setValittu(null);
           }}
         >
           <section
@@ -74,7 +38,6 @@ function Admin() {
               <h2 id="admin-editor-title">
                 {t.admin.edit}: {valittu.nimi[language]}
               </h2>
-
               <button
                 className="btn-secondary"
                 type="button"
@@ -92,13 +55,7 @@ function Admin() {
               <textarea id="kuvaus" />
 
               <label htmlFor="hinta">{t.admin.editPrice}</label>
-              <input
-                id="hinta"
-                type="number"
-                min="0"
-                step="0.01"
-                inputMode="decimal"
-              />
+              <input id="hinta" type="number" min="0" step="0.01" inputMode="decimal" />
 
               <label htmlFor="ruokavalio">{t.admin.editDietary}</label>
               <select id="ruokavalio">
@@ -115,9 +72,22 @@ function Admin() {
           </section>
         </div>
       )}
+
+      <div className="admin-list">
+        {paivat.map((paiva) => (
+          <div className="admin-row" key={paiva.nimi[language]}>
+            <div>
+              <strong>{paiva.nimi[language]}</strong>
+              <div className="admin-meta">{paiva.ruoat}</div>
+            </div>
+            <button className="btn-secondary" onClick={() => setValittu(paiva)}>
+              {t.admin.edit}
+            </button>
+          </div>
+        ))}
+      </div>
     </div>
   );
 }
 
 export default Admin;
-

@@ -1,0 +1,388 @@
+* {
+  box-sizing: border-box;
+}
+
+@font-face {
+  font-family: "FugazOne";
+  src: url("/fonts/FugazOne-Regular.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+}
+
+html,
+body,
+#root {
+  width: 100%;
+  min-height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background-color: #ffffff;
+  color: #222222;
+}
+
+nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  height: 60px;
+  padding: 5px 35px;
+  background-color: #9e2a2b;
+  color: white;
+}
+
+nav h1 {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0;
+  font-family: "FugazOne", cursive;
+  font-size: 30px;
+  font-weight: normal;
+}
+
+nav h1 img {
+  width: 28px;
+  height: 28px;
+}
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.nav-links a {
+  color: white;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.nav-links a:hover {
+  text-decoration: underline;
+}
+
+.language-switcher {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-left: 2px;
+}
+
+.language-button {
+  padding: 5px 8px;
+  border: 1px solid rgb(255 255 255 / 75%);
+  background: transparent;
+  color: white;
+  font-size: 11px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.language-button.active {
+  background: white;
+  color: #9e2a2b;
+  border-color: white;
+}
+
+.language-button:hover {
+  background: rgba(212, 162, 25, 0.363);
+}
+
+.cart-link {
+  display: flex;
+  align-items: center;
+  margin-left: 2px;
+}
+
+.cart-link img {
+  width: 26px;
+  height: 26px;
+}
+
+.home {
+  width: 100%;
+  margin: 0;
+  padding: 50px 40px;
+}
+
+.pizza-carousel {
+  position: relative;
+  height: clamp(240px, 38vw, 390px);
+  margin: 0 0 32px;
+  overflow: hidden;
+  border-radius: 12px;
+  background: #3a2822;
+}
+
+.pizza-slide {
+  position: absolute;
+  inset: 0;
+  visibility: hidden;
+  opacity: 0;
+  transition: opacity 450ms ease, visibility 450ms ease;
+}
+
+.pizza-slide.active {
+  visibility: visible;
+  opacity: 1;
+}
+
+.pizza-slide::after {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(0deg, rgb(0 0 0 / 65%), transparent 65%);
+  content: "";
+}
+
+.pizza-slide img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.home .pizza-slide h2 {
+  position: absolute;
+  z-index: 1;
+  right: 64px;
+  bottom: 40px;
+  left: 64px;
+  margin: 0;
+  color: #f4a261;
+  font-size: clamp(24px, 4vw, 42px);
+  text-shadow: 0 2px 8px rgb(0 0 0 / 50%);
+}
+
+.pizza-carousel-arrow {
+  position: absolute;
+  z-index: 2;
+  top: 50%;
+  display: grid;
+  width: 42px;
+  height: 42px;
+  place-items: center;
+  padding: 0 0 4px;
+  border: 1px solid rgb(255 255 255 / 75%);
+  border-radius: 50%;
+  background: rgb(0 0 0 / 35%);
+  color: white;
+  cursor: pointer;
+  font-size: 30px;
+  line-height: 1;
+  transform: translateY(-50%);
+}
+
+.pizza-carousel-arrow:hover {
+  background: rgb(0 0 0 / 70%);
+}
+
+.pizza-carousel-arrow.previous {
+  left: 14px;
+}
+
+.pizza-carousel-arrow.next {
+  right: 14px;
+}
+
+.pizza-carousel-dots {
+  position: absolute;
+  z-index: 2;
+  right: 0;
+  bottom: 14px;
+  left: 0;
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+}
+
+.pizza-carousel-dots button {
+  width: 9px;
+  height: 9px;
+  padding: 0;
+  border: 1px solid white;
+  border-radius: 50%;
+  background: transparent;
+  cursor: pointer;
+}
+
+.pizza-carousel-dots button.active {
+  background: white;
+}
+
+.home h2 {
+  margin-top: 35px;
+  color: #9e2a2b;
+}
+
+.home .day-selector {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+}
+
+.home .day-selector h2 {
+  min-width: 180px;
+  margin: 0;
+  text-align: center;
+}
+
+.day-arrow {
+  display: inline-flex;
+  width: 42px;
+  height: 42px;
+  flex: 0 0 42px;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border: 1px solid #9e2a2b;
+  border-radius: 50%;
+  background: #ffffff;
+  color: #9e2a2b;
+  cursor: pointer;
+  font-size: 22px;
+  line-height: 1;
+}
+
+.day-arrow:hover {
+  background: #9e2a2b;
+  color: #ffffff;
+}
+
+@media (max-width: 600px) {
+  .home {
+    padding: 28px 18px;
+  }
+
+  .pizza-carousel {
+    height: 250px;
+    margin-bottom: 24px;
+  }
+
+  .home .pizza-slide h2 {
+    right: 48px;
+    bottom: 36px;
+    left: 48px;
+  }
+
+  .pizza-carousel-arrow {
+    width: 36px;
+    height: 36px;
+  }
+
+  .home .day-selector {
+    gap: 8px;
+  }
+
+  .home .day-selector h2 {
+    min-width: 150px;
+  }
+}
+
+.home p {
+  font-size: 18px;
+  line-height: 1.6;
+}
+
+.admin-form {
+  width: 100%;
+  max-width: 420px;
+  padding: 25px;
+  background-color: white;
+  border: 1px solid #cccccc;
+}
+
+.admin-form label {
+  display: block;
+  margin: 15px 0 5px;
+  font-weight: bold;
+}
+
+.admin-form input,
+.admin-form textarea,
+.admin-form select {
+  width: 100%;
+  padding: 10px;
+  font-family: Arial, sans-serif;
+  font-size: 16px;
+  border: 1px solid #bbbbbb;
+  background-color: white;
+  color: #222222;
+}
+
+.admin-form textarea {
+  min-height: 70px;
+  resize: vertical;
+}
+
+.btn {
+  margin-top: 20px;
+  padding: 11px 22px;
+  font-family: Arial, sans-serif;
+  font-size: 16px;
+  font-weight: bold;
+  color: white;
+  background-color: #9e2a2b;
+  border: none;
+  cursor: pointer;
+}
+
+.btn:hover {
+  background-color: #7d2122;
+}
+
+.btn-secondary {
+  padding: 8px 16px;
+  font-family: Arial, sans-serif;
+  font-size: 15px;
+  color: #9e2a2b;
+  background-color: white;
+  border: 1px solid #9e2a2b;
+  cursor: pointer;
+}
+
+.btn-secondary:hover {
+  color: white;
+  background-color: #9e2a2b;
+}
+
+.admin-page {
+  width: 100%;
+  min-height: calc(100vh - 60px);
+  padding: 50px 40px;
+  background-color: #ffffff;
+}
+
+.admin-page h2 {
+  margin-top: 0;
+  color: #9e2a2b;
+}
+
+.admin-list {
+  width: 100%;
+  background-color: white;
+  border: 1px solid #cccccc;
+}
+
+.admin-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 20px;
+  border-bottom: 1px solid #dddddd;
+}
+
+.admin-row:last-child {
+  border-bottom: none;
+}
+
+.admin-meta {
+  margin-top: 4px;
+  font-size: 15px;
+  color: #666666;
+}

@@ -1,10 +1,9 @@
 import { useState } from "react";
 
-import { useLanguage } from "../i18n";
+import { useLanguage } from "../frontend/src/i18n";
 
 function Cart() {
   const { t } = useLanguage();
-
   const [cart, setCart] = useState(
     JSON.parse(localStorage.getItem("cart")) || []
   );
@@ -32,7 +31,6 @@ function Cart() {
                 <div>
                   <h3>{item.name}</h3>
                   <p>{item.description}</p>
-
                   <strong>
                     {item.price.toFixed(2).replace(".", ",")} €
                   </strong>

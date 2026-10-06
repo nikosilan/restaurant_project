@@ -1,22 +1,49 @@
+import { useEffect, useState } from "react";
 import { Routes, Route } from "react-router-dom";
 
 import Navbar from "./components/Navbar";
 import Home from "./pages/Home";
+import Menu from "./pages/Menu";
 import AdminLogin from "./pages/AdminLogin";
 import Admin from "./pages/Admin";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Cart from "./pages/Cart";
 import ProtectedRoute from "./components/ProtectedRoute";
+import { LanguageContext, translations } from "./i18n";
 
 function App() {
+  const [language, setLanguage] = useState(() => {
+    const savedLanguage = localStorage.getItem("pizza-language");
+
+    return savedLanguage || "fi";
+  });
+
+  useEffect(() => {
+    localStorage.setItem("pizza-language", language);
+  }, [language]);
+
   return (
-    <>
+    <LanguageContext.Provider
+      value={{
+        language,
+        setLanguage,
+        languages: [
+          { code: "fi", label: "FI" },
+          { code: "en", label: "EN" },
+        ],
+        t: translations[language],
+      }}
+    >
       <Navbar />
 
       <Routes>
         <Route path="/" element={<Home />} />
+
+        <Route path="/menu" element={<Menu />} />
+
         <Route path="/admin-login" element={<AdminLogin />} />
+
         <Route
           path="/admin"
           element={
@@ -25,11 +52,14 @@ function App() {
             </ProtectedRoute>
           }
         />
+
         <Route path="/login" element={<Login />} />
+
         <Route path="/register" element={<Register />} />
+
         <Route path="/cart" element={<Cart />} />
       </Routes>
-    </>
+    </LanguageContext.Provider>
   );
 }
 

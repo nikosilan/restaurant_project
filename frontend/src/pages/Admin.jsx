@@ -1,11 +1,10 @@
 import { useEffect, useState } from "react";
 import { useAuth } from "../context/AuthContext";
+import { useLanguage } from "../i18n";
 
 const LOCATION_ID = 1;
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3001";
 
-// The form keeps these values as strings because they come directly from inputs.
-// They are converted to numbers when the form is submitted.
 const emptyForm = {
   nameEn: "",
   nameFi: "",
@@ -19,22 +18,19 @@ const emptyForm = {
   dietaryTagIds: "",
 };
 
-// The API returns category and tag IDs as arrays, but comma-separated text is
-// easier for a person to edit in a single input field.
 const toForm = (item) => ({
-  nameEn: item.nameEn,
-  nameFi: item.nameFi,
+  nameEn: item.nameEn || "",
+  nameFi: item.nameFi || "",
   descriptionEn: item.descriptionEn || "",
   descriptionFi: item.descriptionFi || "",
   imageUrl: item.imageUrl || "",
-  price: item.price,
+  price: item.price ?? "",
   active: item.active,
   dayOfWeek: item.dayOfWeek || "",
   categoryIds: item.categoryIds.join(", "),
   dietaryTagIds: item.dietaryTagIds.join(", "),
 });
 
-// Ignore blank or invalid IDs so the backend receives an array of positive integers.
 const parseIds = (value) =>
   value
     .split(",")
@@ -55,8 +51,21 @@ const loadMenuItems = async (token) => {
   return response.json();
 };
 
+const getDayLabel = (day, translations) => {
+  const dayKeys = {
+    Monday: "monday",
+    Tuesday: "tuesday",
+    Wednesday: "wednesday",
+    Thursday: "thursday",
+    Friday: "friday",
+  };
+
+  return dayKeys[day] ? translations.home.days[dayKeys[day]] : day;
+};
+
 function Admin() {
   const { token } = useAuth();
+  const { language, t } = useLanguage();
   const [items, setItems] = useState([]);
   const [selectedItem, setSelectedItem] = useState(null);
   const [form, setForm] = useState(emptyForm);
@@ -64,6 +73,7 @@ function Admin() {
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
+  const [isEditorOpen, setIsEditorOpen] = useState(false);
 
   useEffect(() => {
     if (!token) {
@@ -83,13 +93,13 @@ function Admin() {
       }
     };
 
-    // Load the list only after AuthContext has supplied a token.
     loadItems();
   }, [token]);
 
   const selectItem = (item) => {
     setSelectedItem(item);
     setForm(toForm(item));
+    setIsEditorOpen(true);
     setMessage("");
     setError("");
   };
@@ -97,8 +107,15 @@ function Admin() {
   const startNewItem = () => {
     setSelectedItem(null);
     setForm(emptyForm);
+    setIsEditorOpen(true);
     setMessage("");
     setError("");
+  };
+
+  const closeEditor = () => {
+    setSelectedItem(null);
+    setForm(emptyForm);
+    setIsEditorOpen(false);
   };
 
   const updateField = (event) => {
@@ -118,7 +135,6 @@ function Admin() {
     const payload = {
       ...form,
       locationId: LOCATION_ID,
-      // Browser inputs are strings; the API expects a number and arrays of IDs.
       price: Number(form.price),
       categoryIds: parseIds(form.categoryIds),
       dietaryTagIds: parseIds(form.dietaryTagIds),
@@ -129,7 +145,6 @@ function Admin() {
         ? `/api/admin/menu/${selectedItem.id}`
         : "/api/admin/menu";
       const method = selectedItem ? "PUT" : "POST";
-
       const response = await fetch(`${API_URL}${path}`, {
         method,
         headers: {
@@ -145,10 +160,10 @@ function Admin() {
       }
 
       setItems(await loadMenuItems(token));
-      setMessage(selectedItem ? "Menu item updated." : "Menu item created.");
-      if (!selectedItem) {
-        setForm(emptyForm);
-      }
+      setMessage(
+        selectedItem ? t.admin.menuUpdated : t.admin.menuCreated,
+      );
+      closeEditor();
     } catch (requestError) {
       setError(requestError.message);
     } finally {
@@ -157,12 +172,13 @@ function Admin() {
   };
 
   const archiveItem = async (item) => {
-    if (!window.confirm(`Archive ${item.nameEn} at this location?`)) {
+    if (!window.confirm(`${t.admin.archiveConfirm} ${item.nameEn}?`)) {
       return;
     }
 
     setMessage("");
     setError("");
+
     try {
       const response = await fetch(
         `${API_URL}/api/admin/menu/${item.id}/archive`,
@@ -183,9 +199,9 @@ function Admin() {
 
       setItems(await loadMenuItems(token));
       if (selectedItem?.id === item.id) {
-        startNewItem();
+        closeEditor();
       }
-      setMessage("Menu item archived.");
+      setMessage(t.admin.menuArchived);
     } catch (requestError) {
       setError(requestError.message);
     }
@@ -193,10 +209,10 @@ function Admin() {
 
   return (
     <main className="admin-page">
-      <h2>Menu administration</h2>
-      <p>Add, edit, assign, and archive menu items for this location.</p>
+      <h2>{t.admin.managementTitle}</h2>
+      <p>{t.admin.managementSubtitle}</p>
 
-      {loading && <p>Loading menu...</p>}
+      {loading && <p>{t.admin.loading}</p>}
       {error && <p role="alert">{error}</p>}
       {message && <p role="status">{message}</p>}
 
@@ -205,25 +221,30 @@ function Admin() {
           {items.map((item) => (
             <div className="admin-row" key={item.id}>
               <div>
-                <strong>{item.nameEn}</strong>
+                <strong>{language === "fi" ? item.nameFi : item.nameEn}</strong>
                 <div className="admin-meta">
-                  {item.dayOfWeek || "Every day"} · {item.price} € ·{" "}
-                  {item.active ? "Active" : "Archived"}
+                  {item.dayOfWeek
+                    ? getDayLabel(item.dayOfWeek, t)
+                    : t.admin.everyDay}{" "}
+                  · {item.price} € ·{" "}
+                  {item.active ? t.admin.active : t.admin.archived}
                 </div>
               </div>
               <div>
                 <button
                   className="btn-secondary"
                   type="button"
-                  onClick={() => selectItem(item)}>
-                  Edit
+                  onClick={() => selectItem(item)}
+                >
+                  {t.admin.edit}
                 </button>{" "}
                 {item.active && (
                   <button
                     className="btn-secondary"
                     type="button"
-                    onClick={() => archiveItem(item)}>
-                    Archive
+                    onClick={() => archiveItem(item)}
+                  >
+                    {t.admin.archive}
                   </button>
                 )}
               </div>
@@ -233,106 +254,137 @@ function Admin() {
       )}
 
       <button className="btn" type="button" onClick={startNewItem}>
-        Add menu item
+        {t.admin.addItem}
       </button>
 
-      <h2>{selectedItem ? "Edit menu item" : "Add menu item"}</h2>
-      <form className="admin-form" onSubmit={saveItem}>
-        <label htmlFor="nameEn">Name in English</label>
-        <input
-          id="nameEn"
-          name="nameEn"
-          value={form.nameEn}
-          onChange={updateField}
-          required
-        />
+      {isEditorOpen && (
+        <div
+          className="admin-modal-backdrop"
+          role="presentation"
+          onMouseDown={(event) => {
+            if (event.target === event.currentTarget) {
+              closeEditor();
+            }
+          }}
+        >
+          <section
+            className="admin-editor-dialog"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="admin-editor-title"
+          >
+            <div className="admin-editor-heading">
+              <h2 id="admin-editor-title">
+                {selectedItem ? t.admin.editItem : t.admin.addItem}
+              </h2>
+              <button
+                className="btn-secondary"
+                type="button"
+                onClick={closeEditor}
+              >
+                {t.admin.close}
+              </button>
+            </div>
 
-        <label htmlFor="nameFi">Name in Finnish</label>
-        <input
-          id="nameFi"
-          name="nameFi"
-          value={form.nameFi}
-          onChange={updateField}
-          required
-        />
+            <form className="admin-form" onSubmit={saveItem}>
+              <label htmlFor="nameEn">{t.admin.nameEn}</label>
+              <input
+                id="nameEn"
+                name="nameEn"
+                value={form.nameEn}
+                onChange={updateField}
+                required
+              />
 
-        <label htmlFor="descriptionEn">Description in English</label>
-        <textarea
-          id="descriptionEn"
-          name="descriptionEn"
-          value={form.descriptionEn}
-          onChange={updateField}
-        />
+              <label htmlFor="nameFi">{t.admin.nameFi}</label>
+              <input
+                id="nameFi"
+                name="nameFi"
+                value={form.nameFi}
+                onChange={updateField}
+                required
+              />
 
-        <label htmlFor="descriptionFi">Description in Finnish</label>
-        <textarea
-          id="descriptionFi"
-          name="descriptionFi"
-          value={form.descriptionFi}
-          onChange={updateField}
-        />
+              <label htmlFor="descriptionEn">{t.admin.descriptionEn}</label>
+              <textarea
+                id="descriptionEn"
+                name="descriptionEn"
+                value={form.descriptionEn}
+                onChange={updateField}
+              />
 
-        <label htmlFor="imageUrl">Image URL</label>
-        <input
-          id="imageUrl"
-          name="imageUrl"
-          value={form.imageUrl}
-          onChange={updateField}
-        />
+              <label htmlFor="descriptionFi">{t.admin.descriptionFi}</label>
+              <textarea
+                id="descriptionFi"
+                name="descriptionFi"
+                value={form.descriptionFi}
+                onChange={updateField}
+              />
 
-        <label htmlFor="price">Price</label>
-        <input
-          id="price"
-          name="price"
-          type="number"
-          min="0.01"
-          step="0.01"
-          value={form.price}
-          onChange={updateField}
-          required
-        />
+              <label htmlFor="imageUrl">{t.admin.imageUrl}</label>
+              <input
+                id="imageUrl"
+                name="imageUrl"
+                value={form.imageUrl}
+                onChange={updateField}
+              />
 
-        <label htmlFor="dayOfWeek">Lunch days</label>
-        <input
-          id="dayOfWeek"
-          name="dayOfWeek"
-          value={form.dayOfWeek}
-          onChange={updateField}
-          placeholder="Monday, Wednesday, Friday"
-        />
+              <label htmlFor="price">{t.admin.price}</label>
+              <input
+                id="price"
+                name="price"
+                type="number"
+                min="0.01"
+                step="0.01"
+                value={form.price}
+                onChange={updateField}
+                required
+              />
 
-        <label htmlFor="categoryIds">Category IDs</label>
-        <input
-          id="categoryIds"
-          name="categoryIds"
-          value={form.categoryIds}
-          onChange={updateField}
-          placeholder="1, 2"
-        />
+              <label htmlFor="dayOfWeek">{t.admin.days}</label>
+              <input
+                id="dayOfWeek"
+                name="dayOfWeek"
+                value={form.dayOfWeek}
+                onChange={updateField}
+                placeholder="Monday, Wednesday, Friday"
+              />
 
-        <label htmlFor="dietaryTagIds">Dietary tag IDs</label>
-        <input
-          id="dietaryTagIds"
-          name="dietaryTagIds"
-          value={form.dietaryTagIds}
-          onChange={updateField}
-          placeholder="1, 3"
-        />
+              <label htmlFor="categoryIds">{t.admin.categoryIds}</label>
+              <input
+                id="categoryIds"
+                name="categoryIds"
+                value={form.categoryIds}
+                onChange={updateField}
+                placeholder="1, 2"
+              />
 
-        <label>
-          <input
-            name="active"
-            type="checkbox"
-            checked={form.active}
-            onChange={updateField}
-          />{" "}
-          Active
-        </label>
+              <label htmlFor="dietaryTagIds">{t.admin.dietaryTagIds}</label>
+              <input
+                id="dietaryTagIds"
+                name="dietaryTagIds"
+                value={form.dietaryTagIds}
+                onChange={updateField}
+                placeholder="1, 3"
+              />
 
-        <button className="btn" type="submit" disabled={saving}>
-          {saving ? "Saving..." : "Save changes"}
-        </button>
-      </form>
+              <label>
+                <input
+                  name="active"
+                  type="checkbox"
+                  checked={form.active}
+                  onChange={updateField}
+                />{" "}
+                {t.admin.active}
+              </label>
+
+              <button className="btn" type="submit" disabled={saving}>
+                {saving ? t.admin.saving : t.admin.save}
+              </button>
+            </form>
+          </section>
+        </div>
+      )}
     </main>
   );
 }

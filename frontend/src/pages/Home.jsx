@@ -1,259 +1,175 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
+import { Link } from "react-router-dom";
+
+import { useLanguage } from "../i18n";
+import { useMenu } from "../hooks/useMenu";
+
+const dayNames = [
+  "Monday",
+  "Tuesday",
+  "Wednesday",
+  "Thursday",
+  "Friday",
+  "Saturday",
+  "Sunday",
+];
+
+const getText = (value, language) =>
+  value?.[language] ?? value?.en ?? value ?? "";
+
+const formatPrice = (value) =>
+  Number(value).toFixed(2).replace(".", ",") + " €";
 
 const pizzaImages = [
   {
     src: "https://images.unsplash.com/photo-1513104890138-7c749659a591?auto=format&fit=crop&w=1600&q=85",
-    alt: "Tuore pizza juustolla ja basilikalla",
-    title: "Aitoa italialaista makua",
+    alt: {
+      fi: "Tuore pizza juustolla ja basilikalla",
+      en: "Fresh pizza with cheese and basil",
+    },
+    title: {
+      fi: "Aitoa italialaista makua",
+      en: "Authentic Italian flavor",
+    },
   },
   {
     src: "https://images.unsplash.com/photo-1579751626657-72bc17010498?auto=format&fit=crop&w=1600&q=85",
-    alt: "Pizza paistuu kuumassa uunissa",
-    title: "Suoraan uunista pöytään",
+    alt: {
+      fi: "Pizza paistuu kuumassa uunissa",
+      en: "Pizza baking in a hot oven",
+    },
+    title: {
+      fi: "Suoraan uunista pöytään",
+      en: "Straight from the oven to the table",
+    },
   },
   {
     src: "https://images.unsplash.com/photo-1571407970349-bc81e7e96d47?auto=format&fit=crop&w=1600&q=85",
-    alt: "Herkullinen pizza runsailla täytteillä",
-    title: "Löydä uusi suosikkisi",
+    alt: {
+      fi: "Herkullinen pizza runsailla täytteillä",
+      en: "Delicious pizza with rich toppings",
+    },
+    title: {
+      fi: "Löydä uusi suosikkisi",
+      en: "Find your new favorite",
+    },
   },
 ];
 
-// This fallback keeps the daily menu usable while the API is unavailable.
-const fallbackDailyMenu = [
-  {
-    day: "Maanantai",
-    name: "Margherita-pizza",
-    description: "Tomaattikastike, mozzarella ja basilika",
-    price: 10,
-  },
-  {
-    day: "Tiistai",
-    name: "Kinkkupizza",
-    description: "Tomaattikastike, mozzarella ja kinkku",
-    price: 12.9,
-  },
-  {
-    day: "Keskiviikko",
-    name: "Kebabpizza",
-    description: "Tomaattikastike, mozzarella, kebab ja sipuli",
-    price: 13.9,
-  },
-  {
-    day: "Torstai",
-    name: "Kanapizza ananaksella",
-    description: "Tomaattikastike, mozzarella, kana ja ananas",
-    price: 13.9,
-  },
-  {
-    day: "Perjantai",
-    name: "Opera-pizza",
-    description: "Tomaattikastike, mozzarella, kinkku ja tonnikala",
-    price: 13.9,
-  },
-  {
-    day: "Lauantai",
-    name: "Neljän juuston pizza",
-    description: "Mozzarella, gorgonzola, parmesaani ja emmental",
-    price: 14.9,
-  },
-  {
-    day: "Sunnuntai",
-    name: "Margherita-pizza",
-    description: "Tomaattikastike, mozzarella ja basilika",
-    price: 11.9,
-  },
-];
-
-const weekdayNames = {
-  Monday: "Maanantai",
-  Tuesday: "Tiistai",
-  Wednesday: "Keskiviikko",
-  Thursday: "Torstai",
-  Friday: "Perjantai",
-};
-
-const weekdayOrder = Object.keys(weekdayNames);
-const getTodayMenuIndex = (day) => (day >= 1 && day <= 5 ? day - 1 : 0);
-
-// Keep a small fallback so the homepage remains usable when the API is offline.
-// Remove this before submission, as the menu should be loaded from the database instead.
-const fallbackFullMenu = [
-  {
-    day: "Monday",
-    food: "Margherita",
-    price: 10,
-    dietary: ["L"],
-  },
-  {
-    day: "Tuesday",
-    food: "Pepperoni",
-    price: 12,
-    dietary: ["L"],
-  },
-  {
-    day: "Wednesday",
-    food: "Americana",
-    price: 13,
-    dietary: ["L"],
-  },
-  {
-    day: "Thursday",
-    food: "Kebab",
-    price: 13,
-    dietary: ["L"],
-  },
-  {
-    day: "Friday",
-    food: "Salami",
-    price: 12,
-    dietary: ["L"],
-  },
-];
+function translatedDay(day, translations) {
+  const dayKey = day.toLowerCase();
+  return translations.home.days[dayKey] || day;
+}
 
 function Home() {
+  const { language, t } = useLanguage();
   const today = new Date().getDay();
-  const todayName = weekdayOrder[getTodayMenuIndex(today)];
-
+  const todayIndex = today === 0 ? 6 : today - 1;
   const [activeImage, setActiveImage] = useState(0);
-  const [dailyMenu, setDailyMenu] = useState(fallbackDailyMenu);
-  const [fullMenu, setFullMenu] = useState(fallbackFullMenu);
-  const [isFullMenuLoading, setIsFullMenuLoading] = useState(true);
-  const [fullMenuError, setFullMenuError] = useState("");
-
-  const [selectedDay, setSelectedDay] = useState(getTodayMenuIndex(today));
-
-  useEffect(() => {
-    fetch("/api/menu")
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error("Menu could not be loaded.");
-        }
-        return response.json();
-      })
-      .then((items) => {
-        const mappedItems = items.map((item) => ({
-          id: item.id,
-          day: item.day_name,
-          food: item.name,
-          price: Number(item.price),
-          dietary: item.dietary || [],
-        }));
-
-        setFullMenu(mappedItems);
-
-        const pizzaItems = items
-          .filter(
-            (item) =>
-              weekdayOrder.includes(item.day_name) &&
-              item.categories?.some((category) => category.name_en === "Pizza"),
-          )
-          .sort(
-            (first, second) =>
-              weekdayOrder.indexOf(first.day_name) -
-              weekdayOrder.indexOf(second.day_name),
-          )
-          .map((item) => ({
-            id: item.id,
-            day: weekdayNames[item.day_name] || item.day_name,
-            name: item.name_fi || item.name,
-            description: item.description_fi || item.description,
-            price: Number(item.price),
-          }));
-
-        if (pizzaItems.length > 0) {
-          setDailyMenu(pizzaItems);
-          const todayName =
-            weekdayNames[weekdayOrder[getTodayMenuIndex(today)]];
-          const todayIndex = pizzaItems.findIndex(
-            (item) => item.day === todayName,
-          );
-
-          setSelectedDay(todayIndex >= 0 ? todayIndex : 0);
-        }
-      })
-      .catch(() =>
-        setFullMenuError(
-          "Showing the sample menu. Start the backend to load live data.",
-        ),
-      )
-      .finally(() => setIsFullMenuLoading(false));
-  }, [today]);
+  const [selectedDay, setSelectedDay] = useState(todayIndex);
+  const [addedPizza, setAddedPizza] = useState(null);
+  const {
+    menu: fullMenu,
+    loading: isFullMenuLoading,
+    error: fullMenuError,
+  } = useMenu();
 
   const changeImage = (direction) => {
     setActiveImage((current) => {
       const next = current + direction;
-
       if (next < 0) {
         return pizzaImages.length - 1;
       }
-
       if (next >= pizzaImages.length) {
         return 0;
       }
-
       return next;
     });
   };
 
   const previousDay = () => {
     setSelectedDay((current) =>
-      current === 0 ? dailyMenu.length - 1 : current - 1,
+      current === 0 ? dayNames.length - 1 : current - 1,
     );
   };
 
   const nextDay = () => {
     setSelectedDay((current) =>
-      current === dailyMenu.length - 1 ? 0 : current + 1,
+      current === dayNames.length - 1 ? 0 : current + 1,
     );
   };
 
-  const addToCart = () => {
+  const selectedDayName = dayNames[selectedDay];
+  const dailyItems = fullMenu.filter(
+    (item) => item.day_name === selectedDayName,
+  );
+
+  const addToCart = (item) => {
+    const menuItem = {
+      name: {
+        en: item.name,
+        fi: item.name_fi,
+      },
+      description: {
+        en: item.description,
+        fi: item.description_fi,
+      },
+      price: Number(item.price),
+      day: {
+        en: item.day_name,
+        fi: translatedDay(item.day_name, t),
+      },
+    };
+
     const cart = JSON.parse(localStorage.getItem("cart")) || [];
+    const pizza = {
+      name: getText(menuItem.name, language),
+      description: getText(menuItem.description, language),
+      price: menuItem.price,
+      day: getText(menuItem.day, language),
+    };
 
-    cart.push(dailyMenu[selectedDay]);
-
+    cart.push(pizza);
     localStorage.setItem("cart", JSON.stringify(cart));
-
-    alert("Tuote lisätty ostoskoriin!");
+    setAddedPizza(pizza);
   };
-
-  const currentMenu = dailyMenu[selectedDay];
 
   return (
     <>
       <main className="home">
-        <section className="pizza-carousel" aria-label="Pizzakuvagalleria">
+        <section className="pizza-carousel" aria-label={t.home.galleryLabel}>
           {pizzaImages.map((image, index) => (
             <div
               className={`pizza-slide${index === activeImage ? " active" : ""}`}
               key={image.src}
-              aria-hidden={index !== activeImage}>
+              aria-hidden={index !== activeImage}
+            >
               <img
                 src={image.src}
-                alt={image.alt}
+                alt={getText(image.alt, language)}
                 onError={(event) => {
                   event.currentTarget.onerror = null;
                   event.currentTarget.src = "/pizza.svg";
                 }}
               />
-
-              <h2>{image.title}</h2>
+              <h2>{getText(image.title, language)}</h2>
             </div>
           ))}
 
           <button
             className="pizza-carousel-arrow previous"
             type="button"
-            aria-label="Edellinen kuva"
-            onClick={() => changeImage(-1)}>
+            aria-label={t.home.previousImage}
+            onClick={() => changeImage(-1)}
+          >
             ‹
           </button>
-
           <button
             className="pizza-carousel-arrow next"
             type="button"
-            aria-label="Seuraava kuva"
-            onClick={() => changeImage(1)}>
+            aria-label={t.home.nextImage}
+            onClick={() => changeImage(1)}
+          >
             ›
           </button>
 
@@ -263,7 +179,7 @@ function Home() {
                 className={index === activeImage ? "active" : ""}
                 key={image.src}
                 type="button"
-                aria-label={`Näytä kuva ${index + 1}`}
+                aria-label={`${t.home.showImage} ${index + 1}`}
                 aria-current={index === activeImage ? "true" : undefined}
                 onClick={() => setActiveImage(index)}
               />
@@ -273,60 +189,167 @@ function Home() {
 
         <section className="menu-section">
           <div className="day-navigation">
-            <button type="button" className="day-button" onClick={previousDay}>
+            <button
+              type="button"
+              className="day-button"
+              onClick={previousDay}
+              aria-label={
+                language === "fi" ? "Edellinen päivä" : "Previous day"
+              }
+            >
               ←
             </button>
 
             <div
               className={
-                selectedDay === getTodayMenuIndex(today)
-                  ? "day-name today"
-                  : "day-name"
-              }>
-              {currentMenu.day}
+                selectedDay === todayIndex ? "day-name today" : "day-name"
+              }
+            >
+              {translatedDay(dayNames[selectedDay], t)}
             </div>
 
-            <button type="button" className="day-button" onClick={nextDay}>
+            <button
+              type="button"
+              className="day-button"
+              onClick={nextDay}
+              aria-label={language === "fi" ? "Seuraava päivä" : "Next day"}
+            >
               →
             </button>
           </div>
 
           <div className="day-menu">
-            <h3>{currentMenu.name}</h3>
-
-            <p>{currentMenu.description}</p>
-
-            <strong>{currentMenu.price.toFixed(2).replace(".", ",")} €</strong>
-
-            <button type="button" className="btn" onClick={addToCart}>
-              Add to cart
-            </button>
+            {isFullMenuLoading && (
+              <p>
+                {language === "fi"
+                  ? "Ladataan ruokalistaa..."
+                  : "Loading menu..."}
+              </p>
+            )}
+            {fullMenuError && <p role="alert">{fullMenuError}</p>}
+            {!isFullMenuLoading && dailyItems.length > 0
+              ? dailyItems.map((item) => (
+                  <article key={item.id}>
+                    <h3>{language === "fi" ? item.name_fi : item.name}</h3>
+                    <p>
+                      {language === "fi"
+                        ? item.description_fi
+                        : item.description}
+                    </p>
+                    <strong>{formatPrice(item.price)}</strong>
+                    <button
+                      type="button"
+                      className="btn"
+                      onClick={() => addToCart(item)}
+                    >
+                      {t.home.addToCart}
+                    </button>
+                  </article>
+                ))
+              : !isFullMenuLoading && (
+                  <p>
+                    {language === "fi"
+                      ? "Ei ruokalistaa tälle päivälle."
+                      : "No menu available for this day."}
+                  </p>
+                )}
           </div>
         </section>
       </main>
 
-      <section className="full-menu-section">
-        <h2>Full menu</h2>
+      {addedPizza && (
+        <div
+          className="cart-confirmation-backdrop"
+          role="presentation"
+          onMouseDown={(event) => {
+            if (event.target === event.currentTarget) {
+              setAddedPizza(null);
+            }
+          }}
+        >
+          <section
+            className="cart-confirmation-dialog"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="cart-confirmation-title"
+          >
+            <button
+              className="cart-confirmation-close"
+              type="button"
+              aria-label={language === "fi" ? "Sulje" : "Close"}
+              onClick={() => setAddedPizza(null)}
+            >
+              ×
+            </button>
+            <h2 id="cart-confirmation-title">{t.home.cartAdded}</h2>
+            <div className="cart-confirmation-item">
+              <div>
+                <strong>{addedPizza.name}</strong>
+                <span>{formatPrice(addedPizza.price)}</span>
+              </div>
+            </div>
+            <button
+              className="cart-confirmation-continue"
+              type="button"
+              onClick={() => setAddedPizza(null)}
+            >
+              {t.home.continueShopping}
+            </button>
+            <Link
+              className="cart-confirmation-link"
+              to="/cart"
+              onClick={() => setAddedPizza(null)}
+            >
+              {t.home.goToCart}
+            </Link>
+          </section>
+        </div>
+      )}
 
-        {isFullMenuLoading && <p>Loading menu...</p>}
+      <section className="full-menu-section">
+        <h2>{t.menu.title}</h2>
+        {isFullMenuLoading && (
+          <p>
+            {language === "fi" ? "Ladataan ruokalistaa..." : "Loading menu..."}
+          </p>
+        )}
         {fullMenuError && <p role="status">{fullMenuError}</p>}
 
         <div className="menu-grid">
           {fullMenu.map((item) => {
-            const dietaryNames = item.dietary.map(
-              (tag) => tag.name_en || tag.code || tag,
+            const dietaryNames = item.dietary.map((tag) =>
+              typeof tag === "string"
+                ? tag
+                : getText(
+                    { fi: tag.name_fi, en: tag.name_en || tag.code },
+                    language,
+                  ),
             );
-            const isToday = item.day === todayName || item.day === "Every day";
+            const isToday =
+              item.day_name === dayNames[todayIndex] ||
+              item.day_name === "Every day";
 
             return (
               <article
                 className={isToday ? "menu-card today" : "menu-card"}
-                key={item.id || item.day}>
-                {isToday && <span>Today</span>}
-                <h3>{item.day}</h3>
-                <p>{item.food}</p>
-                <p>{item.price} €</p>
-                <p>Dietary: {dietaryNames.join(", ")}</p>
+                key={item.id || `${item.day_name}-${item.name}`}
+              >
+                {isToday && <span>{t.menu.today}</span>}
+                <h3>
+                  {item.day_name === "Every day"
+                    ? language === "fi"
+                      ? "Joka päivä"
+                      : "Every day"
+                    : translatedDay(item.day_name, t)}
+                </h3>
+                <p>{language === "fi" ? item.name_fi : item.name}</p>
+                <p>
+                  {language === "fi" ? item.description_fi : item.description}
+                </p>
+                <p>{formatPrice(item.price)}</p>
+                <p>
+                  {t.menu.dietary} {dietaryNames.join(", ")}
+                </p>
               </article>
             );
           })}
@@ -334,15 +357,13 @@ function Home() {
       </section>
 
       <section className="location-section">
-        <h2>Sijainti</h2>
-
-        {/* TODO: Load the restaurant name and address from the locations API. */}
+        <h2>{t.home.location}</h2>
         <p>Pizzeria Napoli</p>
-        <p>Kivenlahdentie 10, 02320 Espoo</p>
-
+        <p>Lippajärventie 29, 02940 Espoo</p>
         <iframe
           title="Pizzeria Napolin sijainti kartalla"
-          src="https://www.openstreetmap.org/export/embed.html?bbox=24.643%2C60.178%2C24.673%2C60.188&layer=mapnik&marker=60.183%2C24.658"></iframe>
+          src="https://www.openstreetmap.org/export/embed.html?bbox=24.643%2C60.178%2C24.673%2C60.188&layer=mapnik&marker=60.183%2C24.658"
+        />
       </section>
     </>
   );

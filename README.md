@@ -47,3 +47,9 @@ The health-check endpoint is currently development/testing support for confirmin
 Do not remove only one of the health files, because the remaining imports would break the backend startup.
 
 same for the test.http and possibly the fallbackMenu
+
+## Feedback
+
+Give us feedback on our application here: [Open the feedback form](https://forms.gle/o6CqDKzDPubM5wnZ6)
+
+<img src="docs/feedback-qr.png" alt="QR code for the feedback form" width="200">

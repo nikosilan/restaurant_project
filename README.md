@@ -48,7 +48,10 @@ Do not remove only one of the health files, because the remaining imports would 
 
 same for the test.http and possibly the fallbackMenu
 
-## Feedback
+## Feedback and Testing
+
+To test the application you must be connected to the Metropolia VPN 
+The address to test the application out is: (http://10.120.32.69/)
 
 Give us feedback on our application here: [Open the feedback form](https://forms.gle/o6CqDKzDPubM5wnZ6)
 

@@ -34,20 +34,6 @@ The frontend proxies `/api` requests to the backend during Vite development.
 
 Start the backend, then open `backend/test.http` with the VS Code REST Client extension. It contains requests for the database health check, menu lookup, order creation, and validation errors. The frontend should also display the menu from the database when opened.
 
-## Before production
-
-The health-check endpoint is currently development/testing support for confirming that the backend can connect. Before production we should delete it:
-
-- `backend/src/api/models/health-model.js`
-- `backend/src/api/controllers/health-controller.js`
-- `backend/src/api/routes/health-router.js`
-- The `healthRouter` import and `router.use("/health", healthRouter)` line from `backend/src/api/index.js`
-- The `GET /api/health` request from `backend/test.http`
-
-Do not remove only one of the health files, because the remaining imports would break the backend startup.
-
-same for the test.http and possibly the fallbackMenu
-
 ## Feedback and Testing
 
 To test the application you must be connected to the Metropolia VPN  
